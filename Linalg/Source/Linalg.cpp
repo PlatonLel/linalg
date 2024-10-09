@@ -36,5 +36,24 @@ double Linalg::Matrix::norm() {
     }
 };
 //Matrix& race();
-//Matrix& det();
+double Linalg::Matrix::det() {
+    if (m_rows != m_columns){
+        return 52;
+    }
+    double m_det=0;
+    for (size_t i=0; i<=(m_rows); ++i) {m_det += m_ptr[m_rows*i + i];}
+    return m_det;
+};
+Linalg::Matrix::Matrix(size_t& rows, size_t& columns, std::initializer_list<double> m): m_rows{rows}, m_columns{columns}{
+        if (m.size()!= m_rows*m_columns) {
+            m_ptr= nullptr;
+            m_rows = 0;
+            m_columns = 0;
+        }
+        m_ptr = new double[m_rows*m_columns];
+        size_t i = 0;
+        for (double value : m) {
+            m_ptr[i++] = value;
+        }
+};
 //Matrix& rank();
