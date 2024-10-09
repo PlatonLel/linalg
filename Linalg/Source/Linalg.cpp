@@ -37,6 +37,7 @@ double Linalg::Matrix::det() const {
     if (m_rows != m_columns){
         return 52;
     }
+    if (m_rows==2){}
     double m_det=0;
     for (size_t i=0; i<=(m_rows); ++i) {m_det += std::pow(-1,i)*m_ptr[m_rows*i + i];}
     return m_det;
@@ -78,6 +79,23 @@ Linalg::Matrix& Linalg::Matrix::operator+=(const Matrix& m) {
     if (m_rows != m.m_rows|| m_columns != m.m_columns) {return *this;}
     for (size_t i=0; i<(m_rows*m_columns); ++i) {
         m_ptr[i] += m.m_ptr[i];
+    }
+    return *this;
+    //доделать
+};
+Linalg::Matrix Linalg::Matrix::operator-(const Matrix& m) const {
+    if (m_rows != m.m_rows|| m_columns != m.m_columns) {return *this;}
+    Matrix m_sum(m_rows, m_columns);
+    for (size_t i=0; i<(m_rows*m_columns); ++i) {
+        m_sum.m_ptr[i] = m.m_ptr[i] - m_ptr[i];
+    }
+    return m_sum;
+    //доделать
+};
+Linalg::Matrix& Linalg::Matrix::operator-=(const Matrix& m) {
+    if (m_rows != m.m_rows|| m_columns != m.m_columns) {return *this;}
+    for (size_t i=0; i<(m_rows*m_columns); ++i) {
+        m_ptr[i] -= m.m_ptr[i];
     }
     return *this;
     //доделать

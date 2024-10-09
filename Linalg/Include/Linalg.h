@@ -32,6 +32,8 @@ namespace Linalg {
         Matrix& operator = (const Matrix& m);
         Matrix operator+(const Matrix& m) const;
         Matrix& operator+=(const Matrix& m);
+        Matrix operator-(const Matrix& m) const;
+        Matrix& operator-=(const Matrix& m);
         double norm() const;
         double trace() const;
         double det() const;
