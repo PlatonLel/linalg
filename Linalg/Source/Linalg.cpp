@@ -65,6 +65,15 @@ double  Linalg::Matrix::trace() const {
     for (size_t i=0; i<=(m_rows); ++i) {m_trace += m_ptr[m_rows*i + i];}
     return m_trace;
 };
+Linalg::Matrix Linalg::Matrix::operator+(const Matrix& m) const {
+    if (m_rows != m.m_rows|| m_columns != m.m_columns) {return *this;}
+    Matrix m_sum(m_rows, m_columns);
+    for (size_t i=0; i<(m_rows*m_columns); ++i) {
+        m_sum.m_ptr[i] = m.m_ptr[i] + m_ptr[i];
+    }
+    return m_sum;
+    //доделать
+};
 //double rank() const {
 //
 //};

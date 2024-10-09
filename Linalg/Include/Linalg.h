@@ -11,6 +11,14 @@ namespace Linalg {
         Matrix(size_t& rows, size_t& columns): m_rows{rows}, m_columns{columns}{m_ptr = new double[columns*rows];}
         Matrix(size_t&& rows): m_rows{rows}, m_columns{0} {m_ptr = new double[rows];}
         Matrix(size_t&& rows, size_t&& columns): m_rows{rows}, m_columns{columns}{m_ptr = new double[columns*rows];}
+        Matrix(const size_t& rows): m_rows{rows}, m_columns{0} {m_ptr = new double[rows];}
+        Matrix(const size_t& rows, const size_t& columns): m_rows{rows}, m_columns{columns}{m_ptr = new double[columns*rows];}
+        Matrix(const size_t& rows, size_t& columns): m_rows{rows}, m_columns{columns}{m_ptr = new double[columns*rows];}
+        Matrix(size_t& rows,const size_t& columns): m_rows{rows}, m_columns{columns}{m_ptr = new double[columns*rows];}
+        Matrix(const size_t&& rows): m_rows{rows}, m_columns{0} {m_ptr = new double[rows];}
+        Matrix(const size_t&& rows, size_t&& columns): m_rows{rows}, m_columns{columns}{m_ptr = new double[columns*rows];}
+        Matrix(const size_t&& rows,const size_t&& columns): m_rows{rows}, m_columns{columns}{m_ptr = new double[columns*rows];}
+        Matrix(size_t&& rows,const size_t&& columns): m_rows{rows}, m_columns{columns}{m_ptr = new double[columns*rows];}
         Matrix(const Matrix& m);
         Matrix(std::initializer_list<std::initializer_list<double>> m);
         ~Matrix() {delete[] m_ptr;}
@@ -22,6 +30,7 @@ namespace Linalg {
         const double& operator[](size_t i) const { return m_ptr[i]; }
         double& operator[](size_t i) { return m_ptr[i];}
         Matrix& operator = (const Matrix& m);
+        Matrix operator+(const Matrix& m) const;
         double norm() const;
         double trace() const;
         double det() const;

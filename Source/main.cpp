@@ -3,6 +3,8 @@
 int main() {
     Linalg::Matrix m;
     const Linalg::Matrix m2(1);
-    const Linalg::Matrix m5 = {{3,4}, {5,6}};
-    std::cout << m5.norm() << "\n" << m5.trace() << "\n" << m5.get_ptr() << "\n" << m5.det();
+    Linalg::Matrix m5 = {{3,4}, {5,6}};
+    Linalg::Matrix m6 = {{2,3}, {7,6}};
+    Linalg::Matrix m7 = m6 + m5;
+    std::cout << m5.norm() << "\n" << m5.trace() << "\n" << m5.get_ptr() << "\n" << m7.det();
 }
