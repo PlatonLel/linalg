@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdio>
+#include <cmath>
 #include <iostream>
 
 namespace Linalg {
@@ -12,6 +13,7 @@ namespace Linalg {
         Matrix(size_t&& rows, size_t&& columns): m_rows{rows}, m_columns{columns}{m_ptr = new double[columns*rows];}
         Matrix(const Matrix& m);
         Matrix(size_t& rows, size_t& columns, std::initializer_list<double> m);
+        Matrix(std::initializer_list<std::initializer_list<double>> m);
         ~Matrix() {delete[] m_ptr;}
         size_t get_rows() const {return m_rows;}
         size_t get_columns() const {return m_columns;}

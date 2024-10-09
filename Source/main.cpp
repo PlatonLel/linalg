@@ -5,6 +5,6 @@ int main() {
     const Linalg::Matrix m2(1);
     Linalg::Matrix m3(3,4);
     Linalg::Matrix m4(m3);
-    m3 = m2;
-    std::cout << m3.norm() << "\n" << m3.get_columns() << "\n" << m3.get_ptr() << "\n" << m2.empty();
+    Linalg::Matrix m5 = {{3,4}, {5,6}};
+    std::cout << m5.norm() << "\n" << m5.get_columns() << "\n" << m3.get_ptr() << "\n" << m5.det();
 }
