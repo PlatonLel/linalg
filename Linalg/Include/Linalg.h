@@ -23,9 +23,9 @@ namespace Linalg {
         double& operator[](size_t i) { return m_ptr[i];}
         Matrix& operator = (const Matrix& m);
         double norm() const;
-        Matrix& race();
+        double trace() const;
         double det() const;
-        Matrix& rank();
+//        double rank() const;
     private:
         size_t m_rows;
         size_t m_columns;

@@ -57,5 +57,14 @@ Linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> m) {
     }
     //доделать
 }
-//Matrix& race();
-//Matrix& rank();
+double  Linalg::Matrix::trace() const {
+    if (m_rows != m_columns){
+        return 53;
+    }
+    double m_trace=0;
+    for (size_t i=0; i<=(m_rows); ++i) {m_trace += m_ptr[m_rows*i + i];}
+    return m_trace;
+};
+//double rank() const {
+//
+//};
