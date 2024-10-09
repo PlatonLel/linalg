@@ -25,3 +25,16 @@ Linalg::Matrix& Linalg::Matrix::operator = (const Matrix& m) {
     }
     return *this;
 };
+
+double Linalg::Matrix::norm() {
+    if (!empty()) {
+        double m_norm=0;
+        for (size_t i=0; i<(m_rows*m_columns); ++i) {
+            m_norm+=(m_ptr[i])*(m_ptr[i]);
+        }
+        return m_norm;
+    }
+};
+//Matrix& race();
+//Matrix& det();
+//Matrix& rank();

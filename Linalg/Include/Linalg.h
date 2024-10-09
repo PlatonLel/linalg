@@ -15,11 +15,15 @@ namespace Linalg {
         size_t get_rows() const {return m_rows;}
         size_t get_columns() const {return m_columns;}
         double* get_ptr() const {return m_ptr;}
-        bool empty() const {return (m_columns == 0 & m_rows == 0);}
+        bool empty() const {return (m_ptr == nullptr);}
         void reshape(size_t new_m_columns, size_t new_m_rows);
         const double& operator[](size_t i) const { return m_ptr[i]; }
         double& operator[](size_t i) { return m_ptr[i]; }
         Matrix& operator = (const Matrix& v);
+        double norm();
+        Matrix& race();
+        Matrix& det();
+        Matrix& rank();
     private:
         size_t m_rows;
         size_t m_columns;
