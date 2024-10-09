@@ -31,6 +31,7 @@ namespace Linalg {
         double& operator[](size_t i) { return m_ptr[i];}
         Matrix& operator = (const Matrix& m);
         Matrix operator+(const Matrix& m) const;
+        Matrix& operator+=(const Matrix& m);
         double norm() const;
         double trace() const;
         double det() const;

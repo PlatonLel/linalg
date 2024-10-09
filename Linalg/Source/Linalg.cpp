@@ -74,6 +74,14 @@ Linalg::Matrix Linalg::Matrix::operator+(const Matrix& m) const {
     return m_sum;
     //доделать
 };
+Linalg::Matrix& Linalg::Matrix::operator+=(const Matrix& m) {
+    if (m_rows != m.m_rows|| m_columns != m.m_columns) {return *this;}
+    for (size_t i=0; i<(m_rows*m_columns); ++i) {
+        m_ptr[i] += m.m_ptr[i];
+    }
+    return *this;
+    //доделать
+};
 //double rank() const {
 //
 //};
