@@ -41,6 +41,12 @@ namespace Linalg {
         Matrix& operator-=(const Matrix& m);
         Matrix operator*(const Matrix& m) const;
         Matrix& operator*=(const Matrix& m);
+        Matrix operator+(Matrix&& m) const;
+        Matrix& operator+=(Matrix&& m);
+        Matrix operator-(Matrix&& m) const;
+        Matrix& operator-=(Matrix&& m);
+        Matrix operator*(Matrix&& m) const;
+        Matrix& operator*=(Matrix&& m);
         Matrix operator*(double v);
         Matrix& operator*=(double v);
 //        friend std::ostream& operator<<(std::ostream& os, const Linalg::Matrix& m);
