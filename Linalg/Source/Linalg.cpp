@@ -249,6 +249,38 @@ Linalg::Matrix& Linalg::Matrix::operator-=(Matrix&& m) {
     //доделать
 };
 
+bool Linalg::Matrix::operator==(const Matrix& m) const {
+    if (m_columns!=m.m_columns||m_rows!=m.m_rows) { return false;}
+    for (size_t i=0; i<m_rows*m_columns; ++i) {
+        if (m_ptr[i]!=m.m_ptr[i]) { return false;}
+    }
+    return true;
+};
+
+bool Linalg::Matrix::operator==(Matrix&& m) const {
+    if (m_columns!=m.m_columns||m_rows!=m.m_rows) { return false;}
+    for (size_t i=0; i<m_rows*m_columns; ++i) {
+        if (m_ptr[i]!=m.m_ptr[i]) { return false;}
+    }
+    return true;
+};
+
+bool Linalg::Matrix::operator!=(const Matrix& m) const {
+    if (m_columns!=m.m_columns||m_rows!=m.m_rows) { return true;}
+    for (size_t i=0; i<m_rows*m_columns; ++i) {
+        if (m_ptr[i]!=m.m_ptr[i]) { return true;}
+    }
+    return false;
+};
+
+bool Linalg::Matrix::operator!=(Matrix&& m) const {
+    if (m_columns!=m.m_columns||m_rows!=m.m_rows) { return true;}
+    for (size_t i=0; i<m_rows*m_columns; ++i) {
+        if (m_ptr[i]!=m.m_ptr[i]) { return true;}
+    }
+    return false;
+};
+
 //std::ostream& operator<<(std::ostream& os, const Linalg::Matrix& m) {
 //    for (size_t i = 0; i < m.get_rows(); ++i) {
 //        for (size_t j = 0; j < m.get_columns(); ++j) {
