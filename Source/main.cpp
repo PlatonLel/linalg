@@ -3,8 +3,11 @@
 int main() {
     Linalg::Matrix m;
     const Linalg::Matrix m2(1);
-    Linalg::Matrix m5 = {{3,4}, {5,6}};
-    Linalg::Matrix m6 = {{2,3}, {7,6}};
-    m6 -= m5;
-    std::cout << m5.norm() << "\n" << m5.trace() << "\n" << m5.get_ptr() << "\n" << m6.det();
+    Linalg::Matrix m5 = {{1,2}, {3,4}};
+    Linalg::Matrix m6 = {{5,6},{7,8}};
+//    m6.print();
+//    m5.print();
+    Linalg::Matrix m7(m5*m6);
+    m7.print();
+    std::cout << m7.det();
 }
