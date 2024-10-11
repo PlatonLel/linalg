@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iostream>
 
+
 namespace Linalg {
     class Matrix {
     public:
@@ -27,10 +28,14 @@ namespace Linalg {
         size_t get_rows() const {return m_rows;}
         size_t get_columns() const {return m_columns;}
         double* get_ptr() const {return m_ptr;}
-        size_t find_max_column_element(size_t column) const;
         void swap_rows(size_t row1, size_t row2);
         bool empty() const {return (m_ptr == nullptr);}
         void reshape(size_t new_m_columns, size_t new_m_rows);
+        double norm() const;
+        double trace() const;
+        double det() const;
+        void print() const;
+        size_t gauss();
         Matrix& operator=(const Matrix& m);
         Matrix& operator=(Matrix&& m) noexcept;
         Matrix operator+(const Matrix& m) const;
@@ -54,10 +59,6 @@ namespace Linalg {
         double operator()(const size_t& m_row, const size_t m_column);
         double operator()(const size_t& m_row, const size_t m_column) const;
 //        friend std::ostream& operator<<(std::ostream& os, const Linalg::Matrix& m);
-        double norm() const;
-        double trace() const;
-        double det() const;
-        void print() const;
 //        double rank() const;
     private:
         size_t m_rows;

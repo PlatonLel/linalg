@@ -133,14 +133,12 @@ Linalg::Matrix Linalg::operator*(double v, Linalg::Matrix&& m) {
     return m_return;
 }
 
-
 Linalg::Matrix& Linalg::Matrix::operator*=(double v) {
     for (size_t i=0; i<m_columns*m_rows; ++i) {
         m_ptr[i] *= v;
     }
     return *this;
 }
-
 
 Linalg::Matrix& Linalg::Matrix::operator=(const Matrix& m) {
     if (this == &m) {
@@ -285,12 +283,14 @@ bool Linalg::Matrix::operator!=(Matrix&& m) const {
 double Linalg::Matrix::operator()(const size_t& m_row, const size_t m_column) {
     if (m_rows<m_row||m_columns<m_column) {std::cerr << "Invalid row or column!";}
     return m_ptr[(m_row-1)*m_columns + m_column-1];
-}//доделать
+    //доделать
+}
 
 double Linalg::Matrix::operator()(const size_t& m_row, const size_t m_column) const {
     if (m_rows<m_row||m_columns<m_column) {std::cerr << "Invalid row or column!";}
     return m_ptr[(m_row-1)*m_columns + m_column-1];
-}//доделать
+    //доделать
+}
 
 
 //std::ostream& operator<<(std::ostream& os, const Linalg::Matrix& m) {
@@ -328,30 +328,9 @@ void Linalg::Matrix::reshape(size_t new_m_rows, size_t new_m_columns) {
     }
 }
 
-size_t Linalg::Matrix::find_max_column_element(size_t column) const {
-    if (column >= m_columns) {
-        return 0;
-    }
-
-    double max_value = std::abs(m_ptr[column]);
-    size_t max_row = 0;
-
-    for (size_t row = 1; row < m_rows; ++row) {
-        double element = std::abs(m_ptr[row * m_columns + column]);
-        if (element > max_value) {
-            max_value = element;
-            max_row = row;
-        }
-    }
-
-    return max_row;
-}
-
-
 void Linalg::Matrix::swap_rows(size_t row1, size_t row2) {
-    if (row1 >= m_rows || row2 >= m_rows) {
-        return;
-    }
+    if (row1 >= m_rows || row2 >= m_rows) {return;}
+    if (row1 == row2) {return;}
     for (size_t column = 0; column < m_columns; ++column) {
         std::swap(m_ptr[row1*m_columns + column], m_ptr[row2*m_columns + column]);
     }
@@ -359,36 +338,18 @@ void Linalg::Matrix::swap_rows(size_t row1, size_t row2) {
 
 double Linalg::Matrix::det() const {
     if (m_columns != m_rows){
-        return 0.521;
+        return 0.52;
     }
     Matrix m = *this;
-    size_t swap_counter = 0;
+    size_t swap_counter = m.gauss();
     double det_value = 1;
-    for (size_t i = 0; i < m_rows-1; ++i) {
-        size_t max_column_element = this->find_max_column_element(i);
-        if (i != max_column_element) {
-            m.swap_rows(i, max_column_element);
-            ++swap_counter;
-        }
-        if (std::fabs(m.m_ptr[i * m_columns + i]) < 1e-9) {
-            return 0;
-        }
 
-        for (size_t j = i + 1; j < m_rows; ++j) {
-            double multiplication = -m.m_ptr[j*m_columns + i]/m.m_ptr[i*m_columns + i];
-
-            for (size_t k = i; k < m_rows; ++k) {
-                m.m_ptr[j*m_columns + k] += m.m_ptr[i*m_columns + k]*multiplication;
-            }
-        }
-    }
     for (size_t l=0; l<m_rows; ++l) {
         det_value *= m.m_ptr[m_columns*l + l];
     }
     det_value *= (swap_counter % 2 == 0 ? 1 : -1);
     return det_value;
 }
-
 
 double  Linalg::Matrix::trace() const {
     if (m_rows != m_columns){
@@ -398,6 +359,47 @@ double  Linalg::Matrix::trace() const {
     for (size_t i=0; i<=(m_rows); ++i) {m_trace += m_ptr[m_rows*i + i];}
     return m_trace;
 }
+
+size_t Linalg::Matrix::gauss() {
+    size_t swap_counter = 0;
+    size_t lead_element = 0;
+
+    for (size_t i = 0; i < m_rows; ++i) {
+        if (lead_element >= m_columns) {
+            break;
+        }
+
+        size_t j = i;
+
+        while (m_ptr[j * m_columns + lead_element] == 0) {
+            ++j;
+            if (j == m_rows) {
+                j = i;
+                ++lead_element;
+                if (lead_element == m_columns) {
+                    return swap_counter;
+                }
+            }
+        }
+
+        this->swap_rows(j, i);
+        if (j != i) {
+            ++swap_counter;
+        }
+
+        for (size_t l = i + 1; l < m_rows; ++l) {
+            double coefficient = m_ptr[l * m_columns + lead_element] / m_ptr[i * m_columns + lead_element];
+            for (size_t s = 0; s < m_columns; ++s) {
+                m_ptr[l * m_columns + s] -= coefficient * m_ptr[i * m_columns + s];
+            }
+        }
+        ++lead_element;
+    }
+    return swap_counter;
+}
+
+
+
 //double rank() const {
 //
 //};
