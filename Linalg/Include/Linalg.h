@@ -53,6 +53,7 @@ namespace Linalg {
         bool operator==(Matrix&& m) const;
         bool operator!=(const Matrix& m) const;
         bool operator!=(Matrix&& m) const;
+        double operator()(const size_t& m_row, const size_t m_column);
 //        friend std::ostream& operator<<(std::ostream& os, const Linalg::Matrix& m);
         double norm() const;
         double trace() const;

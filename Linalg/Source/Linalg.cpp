@@ -281,6 +281,12 @@ bool Linalg::Matrix::operator!=(Matrix&& m) const {
     return false;
 };
 
+double Linalg::Matrix::operator()(const size_t& m_row, const size_t m_column) {
+    if (m_rows<m_row||m_columns<m_column) {std::cerr << "Invalid row or column!";}
+    return m_ptr[(m_row-1)*m_columns + m_column-1];
+}//доделать
+
+
 //std::ostream& operator<<(std::ostream& os, const Linalg::Matrix& m) {
 //    for (size_t i = 0; i < m.get_rows(); ++i) {
 //        for (size_t j = 0; j < m.get_columns(); ++j) {
