@@ -31,10 +31,8 @@ namespace Linalg {
         void swap_rows(size_t row1, size_t row2);
         bool empty() const {return (m_ptr == nullptr);}
         void reshape(size_t new_m_columns, size_t new_m_rows);
-        const double& operator[](size_t i) const { return m_ptr[i]; }
-        double& operator[](size_t i) { return m_ptr[i];}
-        Matrix& operator = (const Matrix& m);
-        Matrix& operator = (Matrix&& m);
+        Matrix& operator=(const Matrix& m);
+        Matrix& operator=(Matrix&& m) noexcept;
         Matrix operator+(const Matrix& m) const;
         Matrix& operator+=(const Matrix& m);
         Matrix operator-(const Matrix& m) const;
@@ -54,6 +52,7 @@ namespace Linalg {
         bool operator!=(const Matrix& m) const;
         bool operator!=(Matrix&& m) const;
         double operator()(const size_t& m_row, const size_t m_column);
+        double operator()(const size_t& m_row, const size_t m_column) const;
 //        friend std::ostream& operator<<(std::ostream& os, const Linalg::Matrix& m);
         double norm() const;
         double trace() const;
