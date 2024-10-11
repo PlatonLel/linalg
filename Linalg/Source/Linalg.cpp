@@ -168,7 +168,6 @@ void Linalg::Matrix::reshape(size_t new_m_rows, size_t new_m_columns) {
 
 size_t Linalg::Matrix::find_max_column_element(size_t column) const {
     if (column >= m_columns) {
-        std::cerr << "Ошибка: Неверный индекс столбца\n";
         return 0;
     }
 
@@ -189,7 +188,6 @@ size_t Linalg::Matrix::find_max_column_element(size_t column) const {
 
 void Linalg::Matrix::swap_rows(size_t row1, size_t row2) {
     if (row1 >= m_rows || row2 >= m_rows) {
-        std::cerr << "Ошибка: Неверный индекс строки\n";
         return;
     }
     for (size_t column = 0; column < m_columns; ++column) {
@@ -211,7 +209,6 @@ double Linalg::Matrix::det() const {
             ++swap_counter;
         }
         if (std::fabs(m.m_ptr[i * m_columns + i]) < 1e-9) {
-            std::cerr << "Матрица вырождена или числовая нестабильность, определитель = 0\n";
             return 0;
         }
 
