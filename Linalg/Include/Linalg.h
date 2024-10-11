@@ -41,6 +41,8 @@ namespace Linalg {
         Matrix& operator-=(const Matrix& m);
         Matrix operator*(const Matrix& m) const;
         Matrix& operator*=(const Matrix& m);
+        Matrix operator*(double v);
+        Matrix& operator*=(double v);
 //        friend std::ostream& operator<<(std::ostream& os, const Linalg::Matrix& m);
         double norm() const;
         double trace() const;
@@ -52,5 +54,8 @@ namespace Linalg {
         size_t m_columns;
         double* m_ptr;
     };
+
+    Matrix operator*(double v, Matrix& m);
+    Matrix operator*(double v, Matrix&& m);
 
 }
