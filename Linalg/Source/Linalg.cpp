@@ -58,7 +58,22 @@ Linalg::Matrix Linalg::Matrix::operator*(const Matrix& m) const {
     return m_return;
 }
 
-
+Linalg::Matrix& Linalg::Matrix::operator*=(const Matrix& m) {
+    if (m_columns != m.m_rows) {
+        return *this;
+    }
+    Matrix m_return(m_rows, m.m_columns);
+    for (size_t i = 0; i < m_rows; ++i) {
+        for (size_t j = 0; j < m.m_columns; ++j) {
+            m_return.m_ptr[i * m.m_columns + j] = 0;
+            for (size_t k = 0; k < m_columns; ++k) {
+                m_return.m_ptr[i * m.m_columns + j] += m_ptr[i * m_columns + k] * m.m_ptr[k * m.m_columns + j];
+            }
+        }
+    }
+    *this = std::move(m_return);
+    return *this;
+}
 
 
 Linalg::Matrix& Linalg::Matrix::operator=(const Matrix& m) {

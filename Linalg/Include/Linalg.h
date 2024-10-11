@@ -40,6 +40,7 @@ namespace Linalg {
         Matrix operator-(const Matrix& m) const;
         Matrix& operator-=(const Matrix& m);
         Matrix operator*(const Matrix& m) const;
+        Matrix& operator*=(const Matrix& m);
 //        friend std::ostream& operator<<(std::ostream& os, const Linalg::Matrix& m);
         double norm() const;
         double trace() const;
