@@ -296,16 +296,6 @@ double Linalg::Matrix::operator()(const size_t& m_row, const size_t& m_column) c
     return m_ptr[m_row * m_columns + m_column];
 }
 
-//std::ostream& operator<<(std::ostream& os, const Linalg::Matrix& m) {
-//    for (size_t i = 0; i < m.get_rows(); ++i) {
-//        for (size_t j = 0; j < m.get_columns(); ++j) {
-//            os << m.get_ptr()[i * m.get_columns() + j] << " ";  // Выводим элемент
-//        }
-//        os << '\n';  // Переход на новую строку после каждого ряда
-//    }
-//    return os;
-//}
-
 double Linalg::Matrix::norm() const {
     if (!empty()) {
         double m_norm=0;
@@ -324,14 +314,14 @@ void Linalg::Matrix::print() const {
     }
 }
 
-void Linalg::Matrix::reshape(size_t new_m_rows, size_t new_m_columns) {
+void Linalg::Matrix::reshape(size_t& new_m_rows, size_t& new_m_columns) {
     if (new_m_columns * new_m_rows == m_columns * m_rows) {
         m_columns = new_m_columns;
         m_rows = new_m_rows;
     }
 }
 
-void Linalg::Matrix::swap_rows(size_t row1, size_t row2) {
+void Linalg::Matrix::swap_rows(size_t& row1, size_t& row2) {
     if (row1 >= m_rows || row2 >= m_rows) {return;}
     if (row1 == row2) {return;}
     for (size_t column = 0; column < m_columns; ++column) {
@@ -523,7 +513,23 @@ Linalg::Matrix Linalg::concatenate(const Linalg::Matrix &m_left, Linalg::Matrix 
     return m_return;
 }
 
+Linalg::Matrix Linalg::transpose(const Matrix& m) {
+    Matrix m_return(m.get_columns(), m.get_rows());
+    for (size_t i = 0; i < m.get_rows(); ++i) {
+        for (size_t j =0; j < m.get_columns(); ++j) {
+            m_return(i,j) = m(j,i);
+        }
+    }
+    return m_return;
+}
 
-//double rank() const {
-//
-//};
+Linalg::Matrix Linalg::transpose(Matrix&& m) {
+    Matrix m_return(m.get_columns(), m.get_rows());
+    for (size_t i = 0; i < m.get_rows(); ++i) {
+        for (size_t j =0; j < m.get_columns(); ++j) {
+            m_return(i,j) = m(j,i);
+        }
+    }
+    return m_return;
+}
+
