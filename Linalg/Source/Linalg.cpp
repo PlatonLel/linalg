@@ -399,40 +399,51 @@ size_t Linalg::Matrix::gauss() {
 }
 
 Linalg::Matrix Linalg::power(const Matrix& m, size_t power) {
-    if (m.get_columns()!=m.get_rows()) {return m;}
+    if (m.get_columns() != m.get_rows()) {
+        return m;
+    }
 
-    Matrix m_return = m;
+    Matrix m_return(m.get_rows(), m.get_columns());
+    for (size_t i = 0; i < m.get_rows(); ++i) {
+        m_return.get_ptr()[i*m_return.get_columns() + i] = 1;
+    }
 
-    while(power > 0) {
+    Matrix matrix_for_power = m;
+
+    while (power > 0) {
         if (power % 2 == 1) {
-            m_return *= m;
-            --power;
+            m_return *= matrix_for_power;
         }
-        if (power == 0) {return m_return;}
-        m_return *= m_return;
+        matrix_for_power *= matrix_for_power;
         power /= 2;
     }
+
     return m_return;
-    // доделать
 }
 
-Linalg::Matrix Linalg::power(const Matrix&& m, size_t power) {
-    if (m.get_columns()!=m.get_rows()) {return m;}
+Linalg::Matrix Linalg::power(Matrix&& m, size_t power) {
+    if (m.get_columns() != m.get_rows()) {
+        return m;
+    }
 
-    Matrix m_return(m);
+    Matrix m_return(m.get_rows(), m.get_columns());
+    for (size_t i = 0; i < m.get_rows(); ++i) {
+        m_return.get_ptr()[i * m_return.get_columns() + i] = 1;
+    }
 
-    while(power > 0) {
+    Matrix matrix_for_power = m;
+
+    while (power > 0) {
         if (power % 2 == 1) {
-            m_return *= m;
-            --power;
+            m_return *= matrix_for_power;
         }
-        if (power == 0) {return m_return;}
-        m_return *= m_return;
+        matrix_for_power *= matrix_for_power;
         power /= 2;
     }
+
     return m_return;
-    // доделать
 }
+
 
 
 //double rank() const {
