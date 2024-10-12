@@ -280,18 +280,21 @@ bool Linalg::Matrix::operator!=(Matrix&& m) const {
     return false;
 }
 
-double Linalg::Matrix::operator()(const size_t& m_row, const size_t m_column) {
-    if (m_rows<m_row||m_columns<m_column) {std::cerr << "Invalid row or column!";}
-    return m_ptr[(m_row-1)*m_columns + m_column-1];
-    //доделать
+double& Linalg::Matrix::operator()(const size_t& m_row, const size_t& m_column) {
+    if (m_row >= m_rows || m_column >= m_columns) {
+        std::cerr << "Invalid row or column!";
+        exit(EXIT_FAILURE);
+    }
+    return m_ptr[m_row * m_columns + m_column];
 }
 
-double Linalg::Matrix::operator()(const size_t& m_row, const size_t m_column) const {
-    if (m_rows<m_row||m_columns<m_column) {std::cerr << "Invalid row or column!";}
-    return m_ptr[(m_row-1)*m_columns + m_column-1];
-    //доделать
+double Linalg::Matrix::operator()(const size_t& m_row, const size_t& m_column) const {
+    if (m_row >= m_rows || m_column >= m_columns) {
+        std::cerr << "Invalid row or column!";
+        exit(EXIT_FAILURE);
+    }
+    return m_ptr[m_row * m_columns + m_column];
 }
-
 
 //std::ostream& operator<<(std::ostream& os, const Linalg::Matrix& m) {
 //    for (size_t i = 0; i < m.get_rows(); ++i) {
@@ -444,6 +447,81 @@ Linalg::Matrix Linalg::power(Matrix&& m, size_t power) {
     return m_return;
 }
 
+Linalg::Matrix Linalg::concatenate(const Linalg::Matrix &m_left, const Linalg::Matrix &m_right) {
+    if (m_left.get_rows() != m_right.get_rows()) {
+        return {};
+    }
+
+    Matrix m_return(m_left.get_rows(), m_left.get_columns() + m_right.get_columns());
+
+    for (size_t i = 0; i < m_left.get_rows(); ++i) {
+        for (size_t j = 0; j < m_left.get_columns(); ++j) {
+            m_return(i, j) = m_left(i, j);
+        }
+        for (size_t j = 0; j < m_right.get_columns(); ++j) {
+            m_return(i, m_left.get_columns() + j) = m_right(i, j);
+        }
+    }
+
+    return m_return;
+}
+
+Linalg::Matrix Linalg::concatenate(Linalg::Matrix &&m_left, const Linalg::Matrix &m_right) {
+    if (m_left.get_rows() != m_right.get_rows()) {
+        return {};
+    }
+
+    Matrix m_return(m_left.get_rows(), m_left.get_columns() + m_right.get_columns());
+
+    for (size_t i = 0; i < m_left.get_rows(); ++i) {
+        for (size_t j = 0; j < m_left.get_columns(); ++j) {
+            m_return(i, j) = m_left(i, j);
+        }
+        for (size_t j = 0; j < m_right.get_columns(); ++j) {
+            m_return(i, m_left.get_columns() + j) = m_right(i, j);
+        }
+    }
+
+    return m_return;
+}
+
+Linalg::Matrix Linalg::concatenate(Linalg::Matrix &&m_left, Linalg::Matrix &&m_right) {
+    if (m_left.get_rows() != m_right.get_rows()) {
+        return {};
+    }
+
+    Matrix m_return(m_left.get_rows(), m_left.get_columns() + m_right.get_columns());
+
+    for (size_t i = 0; i < m_left.get_rows(); ++i) {
+        for (size_t j = 0; j < m_left.get_columns(); ++j) {
+            m_return(i, j) = m_left(i, j);
+        }
+        for (size_t j = 0; j < m_right.get_columns(); ++j) {
+            m_return(i, m_left.get_columns() + j) = m_right(i, j);
+        }
+    }
+
+    return m_return;
+}
+
+Linalg::Matrix Linalg::concatenate(const Linalg::Matrix &m_left, Linalg::Matrix &&m_right) {
+    if (m_left.get_rows() != m_right.get_rows()) {
+        return {};
+    }
+
+    Matrix m_return(m_left.get_rows(), m_left.get_columns() + m_right.get_columns());
+
+    for (size_t i = 0; i < m_left.get_rows(); ++i) {
+        for (size_t j = 0; j < m_left.get_columns(); ++j) {
+            m_return(i, j) = m_left(i, j);
+        }
+        for (size_t j = 0; j < m_right.get_columns(); ++j) {
+            m_return(i, m_left.get_columns() + j) = m_right(i, j);
+        }
+    }
+
+    return m_return;
+}
 
 
 //double rank() const {

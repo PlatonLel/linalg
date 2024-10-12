@@ -56,8 +56,8 @@ namespace Linalg {
         bool operator==(Matrix&& m) const;
         bool operator!=(const Matrix& m) const;
         bool operator!=(Matrix&& m) const;
-        double operator()(const size_t& m_row, const size_t m_column);
-        double operator()(const size_t& m_row, const size_t m_column) const;
+        double& operator()(const size_t& m_row, const size_t& m_column);
+        double operator()(const size_t& m_row, const size_t& m_column) const;
 //        friend std::ostream& operator<<(std::ostream& os, const Linalg::Matrix& m);
 //        double rank() const;
     private:
@@ -70,5 +70,9 @@ namespace Linalg {
     Matrix operator*(double v, Matrix&& m);
     Matrix power(const Matrix& m, size_t power);
     Matrix power(Matrix&& m, size_t power);
-    Matrix concatenate(const Matrix& m_left, const Matrix& right);
+    Matrix concatenate(const Matrix& m_left, const Matrix& m_right);
+    Matrix concatenate(Matrix&& m_left, const Matrix& m_right);
+    Matrix concatenate(Matrix&& m_left, Matrix&& m_right);
+    Matrix concatenate(const Matrix& m_left, Matrix&& m_right);
+
 }
