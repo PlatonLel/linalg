@@ -68,5 +68,5 @@ namespace Linalg {
 
     Matrix operator*(double v, Matrix& m);
     Matrix operator*(double v, Matrix&& m);
-
+    Matrix power(const Matrix& m, size_t power);
 }

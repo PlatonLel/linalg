@@ -398,7 +398,23 @@ size_t Linalg::Matrix::gauss() {
     return swap_counter;
 }
 
+Linalg::Matrix Linalg::power(const Matrix& m, size_t power) {
+    if (m.get_columns()!=m.get_rows()) {return m;}
 
+    Matrix m_return(m.get_rows(), m.get_columns());
+
+    while(power > 0) {
+        if (power % 2 == 1) {
+            m_return *= m;
+            --power;
+        }
+        if (power == 0) {return m_return;}
+        m_return *= m_return;
+        power /= 2;
+    }
+    return m_return;
+    // доделать
+};
 
 //double rank() const {
 //
