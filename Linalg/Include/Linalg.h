@@ -69,4 +69,6 @@ namespace Linalg {
     Matrix operator*(double v, Matrix& m);
     Matrix operator*(double v, Matrix&& m);
     Matrix power(const Matrix& m, size_t power);
+    Matrix power(const Matrix&& m, size_t power);
+    Matrix concatenate(const Matrix& m_left, const Matrix& right);
 }
