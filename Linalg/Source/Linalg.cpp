@@ -290,6 +290,27 @@ double Linalg::Matrix::operator()(const size_t& m_row, const size_t& m_column) c
     return m_ptr[m_row * m_columns + m_column];
 }
 
+std::ostream& Linalg::operator<<(std::ostream& os, const Matrix& m) {
+    size_t max_width = 0;
+
+    for (size_t i = 0; i < m.get_rows(); ++i) {
+        for (size_t j = 0; j < m.get_columns(); ++j) {
+            std::ostringstream temp;
+            temp << m(i, j);
+            max_width = std::max(max_width, temp.str().length());
+        }
+    }
+
+    for (size_t i = 0; i < m.get_rows(); ++i) {
+        os << "|";
+        for (size_t j = 0; j < m.get_columns(); ++j) {
+            os << std::setw(max_width) << m(i, j) << " ";
+        }
+        os << "|\n";
+    }
+    return os;
+}
+
 double Linalg::Matrix::norm() const {
     if (empty()) {
         throw Empty_matrix{};
@@ -299,22 +320,6 @@ double Linalg::Matrix::norm() const {
         m_norm += (m_ptr[i])*(m_ptr[i]);
     }
     return std::sqrt(m_norm);
-}
-
-//void Linalg::Matrix::print() const {
-//    for (size_t i=0; i<(m_columns*m_rows); ++i) {
-//        std::cout << m_ptr[i] << ", ";
-//    }
-//}
-
-std::ostream& Linalg::operator<<(std::ostream& os, const Matrix& m) {
-    if(m.empty()) {throw Empty_matrix{};}
-
-    for (size_t i=0; i<(m.get_rows()*m.get_columns()); ++i) {
-        os << m.get_ptr()[i] << " ";
-    }
-
-    return os;
 }
 
 void Linalg::Matrix::reshape(const size_t& new_m_rows, const size_t& new_m_columns) {
@@ -456,7 +461,6 @@ Linalg::Matrix Linalg::power(const Matrix& m, int& power) {
 
     return m_return;
 }
-
 
 Linalg::Matrix Linalg::power(Matrix&& m, int& power) {
     if (m.empty()) {
@@ -778,7 +782,6 @@ Linalg::Matrix Linalg::invert(const Matrix& m) {
     return m_return;
 }
 
-
 double Linalg::get_sum_U(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U) {
     double result = 0;
 
@@ -800,6 +803,7 @@ double Linalg::get_sum_L(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m
     }
     return result;
 }
+
 Linalg::Matrix Linalg::backward_substitution(const Matrix& m_U, const Matrix& y) {
     size_t n = m_U.get_rows();
     Matrix x(n);
@@ -814,6 +818,7 @@ Linalg::Matrix Linalg::backward_substitution(const Matrix& m_U, const Matrix& y)
 
     return x;
 }
+
 Linalg::Matrix Linalg::forward_substitution(const Matrix& m_L, const Matrix& b) {
     size_t n = m_L.get_rows();
     Matrix y(n);

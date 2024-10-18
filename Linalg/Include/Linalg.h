@@ -3,6 +3,8 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <sstream>
+#include <iomanip>
 
 
 namespace Linalg {
@@ -96,6 +98,8 @@ namespace Linalg {
         size_t m_columns;
         double *m_ptr;
     };
+
+    std::ostream& operator<<(std::ostream& os, const Matrix& matrix);
 
     Matrix operator*(const double& v, const Matrix& m);
 
