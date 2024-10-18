@@ -415,15 +415,27 @@ Linalg::Matrix Linalg::power(const Matrix& m, int& power) {
     }
 
     Matrix m_return(m.get_rows(), m.get_columns());
+
     for (size_t i = 0; i < m.get_rows(); ++i) {
-        m_return(i,i) = 1;
+        for (size_t j = 0; j < m.get_columns(); ++j) {
+            if (i == j) {
+                m_return(i,i) = 1;
+            } else {
+                m_return(i,j) = 0;
+            }
+        }
     }
+
+    if (power == 0) {
+        return m_return;
+    }
+
     Matrix matrix_for_power;
-    if (power>0) {matrix_for_power = m;}
+    if (power > 0) {
+        matrix_for_power = m;
+    }
 
-    if (power==0) {return m_return;}
-
-    if (power<0) {
+    if (power < 0) {
         matrix_for_power = invert(m);
         power = std::abs(power);
     }
@@ -436,13 +448,15 @@ Linalg::Matrix Linalg::power(const Matrix& m, int& power) {
         power /= 2;
     }
 
-    for (size_t i=0; i<m.get_rows()*m.get_columns(); ++i) {
-        if(std::abs(m_return.get_ptr()[i])<eps) {m_return.get_ptr()[i]=0;}
+    for (size_t i = 0; i < m.get_rows() * m.get_columns(); ++i) {
+        if (std::abs(m_return.get_ptr()[i]) < eps) {
+            m_return.get_ptr()[i] = 0;
+        }
     }
-
 
     return m_return;
 }
+
 
 Linalg::Matrix Linalg::power(Matrix&& m, int& power) {
     if (m.empty()) {
@@ -453,15 +467,27 @@ Linalg::Matrix Linalg::power(Matrix&& m, int& power) {
     }
 
     Matrix m_return(m.get_rows(), m.get_columns());
+
     for (size_t i = 0; i < m.get_rows(); ++i) {
-        m_return(i,i) = 1;
+        for (size_t j = 0; j < m.get_columns(); ++j) {
+            if (i == j) {
+                m_return(i,i) = 1;
+            } else {
+                m_return(i,j) = 0;
+            }
+        }
     }
+
+    if (power == 0) {
+        return m_return;
+    }
+
     Matrix matrix_for_power;
-    if (power>0) {matrix_for_power = m;}
+    if (power > 0) {
+        matrix_for_power = m;
+    }
 
-    if (power==0) {return m_return;}
-
-    if (power<0) {
+    if (power < 0) {
         matrix_for_power = invert(m);
         power = std::abs(power);
     }
@@ -474,10 +500,11 @@ Linalg::Matrix Linalg::power(Matrix&& m, int& power) {
         power /= 2;
     }
 
-    for (size_t i=0; i<m.get_rows()*m.get_columns(); ++i) {
-        if(std::abs(m_return.get_ptr()[i])<eps) {m_return.get_ptr()[i]=0;}
+    for (size_t i = 0; i < m.get_rows() * m.get_columns(); ++i) {
+        if (std::abs(m_return.get_ptr()[i]) < eps) {
+            m_return.get_ptr()[i] = 0;
+        }
     }
-
 
     return m_return;
 }
@@ -491,15 +518,27 @@ Linalg::Matrix Linalg::power(const Matrix& m, int&& power) {
     }
 
     Matrix m_return(m.get_rows(), m.get_columns());
+
     for (size_t i = 0; i < m.get_rows(); ++i) {
-        m_return(i,i) = 1;
+        for (size_t j = 0; j < m.get_columns(); ++j) {
+            if (i == j) {
+                m_return(i,i) = 1;
+            } else {
+                m_return(i,j) = 0;
+            }
+        }
     }
+
+    if (power == 0) {
+        return m_return;
+    }
+
     Matrix matrix_for_power;
-    if (power>0) {matrix_for_power = m;}
+    if (power > 0) {
+        matrix_for_power = m;
+    }
 
-    if (power==0) {return m_return;}
-
-    if (power<0) {
+    if (power < 0) {
         matrix_for_power = invert(m);
         power = std::abs(power);
     }
@@ -512,8 +551,10 @@ Linalg::Matrix Linalg::power(const Matrix& m, int&& power) {
         power /= 2;
     }
 
-    for (size_t i=0; i<m.get_rows()*m.get_columns(); ++i) {
-        if(std::abs(m_return.get_ptr()[i])<eps) {m_return.get_ptr()[i]=0;}
+    for (size_t i = 0; i < m.get_rows() * m.get_columns(); ++i) {
+        if (std::abs(m_return.get_ptr()[i]) < eps) {
+            m_return.get_ptr()[i] = 0;
+        }
     }
 
     return m_return;
@@ -528,15 +569,27 @@ Linalg::Matrix Linalg::power(Matrix&& m, int&& power) {
     }
 
     Matrix m_return(m.get_rows(), m.get_columns());
+
     for (size_t i = 0; i < m.get_rows(); ++i) {
-        m_return(i,i) = 1;
+        for (size_t j = 0; j < m.get_columns(); ++j) {
+            if (i == j) {
+                m_return(i,i) = 1;
+            } else {
+                m_return(i,j) = 0;
+            }
+        }
     }
+
+    if (power == 0) {
+        return m_return;
+    }
+
     Matrix matrix_for_power;
-    if (power>0) {matrix_for_power = m;}
+    if (power > 0) {
+        matrix_for_power = m;
+    }
 
-    if (power==0) {return m_return;}
-
-    if (power<0) {
+    if (power < 0) {
         matrix_for_power = invert(m);
         power = std::abs(power);
     }
@@ -549,8 +602,10 @@ Linalg::Matrix Linalg::power(Matrix&& m, int&& power) {
         power /= 2;
     }
 
-    for (size_t i=0; i<m.get_rows()*m.get_columns(); ++i) {
-        if(std::abs(m_return.get_ptr()[i])<eps) {m_return.get_ptr()[i]=0;}
+    for (size_t i = 0; i < m.get_rows() * m.get_columns(); ++i) {
+        if (std::abs(m_return.get_ptr()[i]) < eps) {
+            m_return.get_ptr()[i] = 0;
+        }
     }
 
     return m_return;
