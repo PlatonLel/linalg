@@ -3,7 +3,6 @@
 double eps = std::numeric_limits<double>::epsilon();
 
 Linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> m)
-
 {
     m_rows = m.size();
     m_columns = m.begin()->size();

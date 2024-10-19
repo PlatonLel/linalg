@@ -34,7 +34,7 @@ namespace Linalg {
 
         void swap_rows(const size_t& row1,const size_t& row2);
 
-        bool empty() const noexcept { return (m_ptr == nullptr); }
+        bool empty() const noexcept { return ((m_ptr == nullptr)||(m_columns==0 && m_rows==0)); }
 
         void reshape(const size_t& new_m_columns,const size_t& new_m_rows);
 
