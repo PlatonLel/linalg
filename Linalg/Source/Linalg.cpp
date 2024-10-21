@@ -17,8 +17,8 @@ Linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> m)
 }
 
 Linalg::Matrix::Matrix(std::initializer_list<double> m) {
-    m_columns = 1;
-    m_rows = m.size();
+    m_rows = 1;
+    m_columns = m.size();
     m_ptr = new double[m_rows];
     size_t i=0;
     for (double value : m) {
@@ -27,7 +27,7 @@ Linalg::Matrix::Matrix(std::initializer_list<double> m) {
     }
 }
 
-Linalg::Matrix::Matrix(Linalg::Matrix&& m) noexcept {
+Linalg::Matrix::Matrix(Matrix&& m) noexcept {
     m_ptr = m.m_ptr;
     m.m_ptr = nullptr;
     m_columns = m.m_columns;
@@ -43,37 +43,13 @@ Linalg::Matrix::Matrix(const Matrix& m) {
     m_rows = m.m_rows;
 }
 
-Linalg::Matrix Linalg::Matrix::operator*(const Matrix& m) const {
-    if (m_columns != m.m_rows) {
+Linalg::Matrix Linalg::operator*(const Matrix& m1, const Matrix& m2) {
+    if (m1.get_columns() != m2.get_rows()) {
         throw Wrong_matrix_size{};
     }
 
-    Matrix m_return(m_rows, m.m_columns);
-    for (size_t i = 0; i < m_rows; ++i) {
-        for (size_t j = 0; j < m.m_columns; ++j) {
-            m_return.m_ptr[i * m.m_columns + j] = 0;
-            for (size_t k = 0; k < m_columns; ++k) {
-                m_return.m_ptr[i * m.m_columns + j] += m_ptr[i * m_columns + k] * m.m_ptr[k * m.m_columns + j];
-            }
-        }
-    }
-
-    return m_return;
-}
-
-Linalg::Matrix Linalg::Matrix::operator*(Matrix&& m) const {
-    if (m_columns != m.m_rows) {
-        throw Wrong_matrix_size{};
-    }
-    Matrix m_return(m_rows, m.m_columns);
-    for (size_t i = 0; i < m_rows; ++i) {
-        for (size_t j = 0; j < m.m_columns; ++j) {
-            m_return.m_ptr[i * m.m_columns + j] = 0;
-            for (size_t k = 0; k < m_columns; ++k) {
-                m_return.m_ptr[i * m.m_columns + j] += m_ptr[i * m_columns + k] * m.m_ptr[k * m.m_columns + j];
-            }
-        }
-    }
+    Matrix m_return(m1);
+    m_return*=m2;
 
     return m_return;
 }
@@ -95,44 +71,15 @@ Linalg::Matrix& Linalg::Matrix::operator*=(const Matrix& m) {
     return *this;
 }
 
-Linalg::Matrix& Linalg::Matrix::operator*=(Matrix&& m) {
-    if (m_columns != m.m_rows) {
-        throw Wrong_matrix_size{};
-    }
-    Matrix m_return(m_rows, m.m_columns);
-    for (size_t i = 0; i < m_rows; ++i) {
-        for (size_t j = 0; j < m.m_columns; ++j) {
-            m_return.m_ptr[i * m.m_columns + j] = 0;
-            for (size_t k = 0; k < m_columns; ++k) {
-                m_return.m_ptr[i * m.m_columns + j] += m_ptr[i * m_columns + k] * m.m_ptr[k * m.m_columns + j];
-            }
-        }
-    }
-    *this = std::move(m_return);
-    return *this;
-}
-
-Linalg::Matrix Linalg::Matrix::operator*(const double& v) {
-    Matrix m_return(*this);
-    for (size_t i=0; i<m_columns*m_rows; ++i) {
-        m_return.m_ptr[i] *= v;
-    }
+Linalg::Matrix Linalg::operator*(const Matrix& m, const double& v) {
+    Matrix m_return(m);
+    m_return*=v;
     return m_return;
 }
 
 Linalg::Matrix Linalg::operator*(const double& v, const Matrix& m) {
-    Linalg::Matrix m_return(m);
-    for (size_t i=0; i<m.get_columns()*m.get_rows(); ++i) {
-        m_return.get_ptr()[i] *= v;
-    }
-    return m_return;
-}
-
-Linalg::Matrix Linalg::operator*(const double& v, Matrix&& m) {
-    Linalg::Matrix m_return = std::move(m);
-    for (size_t i=0; i<m.get_columns()*m.get_rows(); ++i) {
-        m_return.get_ptr()[i] *= v;
-    }
+    Matrix m_return(m);
+    m_return*=v;
     return m_return;
 }
 
@@ -159,33 +106,10 @@ Linalg::Matrix& Linalg::Matrix::operator=(const Matrix& m) {
     return *this;
 }
 
-Linalg::Matrix& Linalg::Matrix::operator=(Matrix&& m) noexcept {
-    if (this == &m) {
-        return *this;
-    }
-    delete[] m_ptr;
-    m_ptr = m.m_ptr;
-    m_rows = m.m_rows;
-    m_columns = m.m_columns;
-    m.m_ptr = nullptr;
-    return *this;
-}
-
 Linalg::Matrix Linalg::Matrix::operator+(const Matrix& m) const {
     if (m_rows != m.m_rows|| m_columns != m.m_columns) {throw Wrong_matrix_size{};}
-    Matrix m_sum(m_rows, m_columns);
-    for (size_t i=0; i<(m_rows*m_columns); ++i) {
-        m_sum.m_ptr[i] = m.m_ptr[i] + m_ptr[i];
-    }
-    return m_sum;
-}
-
-Linalg::Matrix Linalg::Matrix::operator+(Matrix&& m) const {
-    if (m_rows != m.m_rows|| m_columns != m.m_columns) {throw Wrong_matrix_size{};}
-    Matrix m_sum(m_rows, m_columns);
-    for (size_t i=0; i<(m_rows*m_columns); ++i) {
-        m_sum.m_ptr[i] = m.m_ptr[i] + m_ptr[i];
-    }
+    Matrix m_sum(*this);
+    m_sum+=m;
     return m_sum;
 }
 
@@ -197,43 +121,14 @@ Linalg::Matrix& Linalg::Matrix::operator+=(const Matrix& m) {
     return *this;
 }
 
-Linalg::Matrix& Linalg::Matrix::operator+=(Matrix&& m) {
-    if (m_rows != m.m_rows|| m_columns != m.m_columns) {throw Wrong_matrix_size{};}
-    for (size_t i=0; i<(m_rows*m_columns); ++i) {
-        m_ptr[i] += m.m_ptr[i];
-    }
-    return *this;
-}
-
 Linalg::Matrix Linalg::Matrix::operator-(const Matrix& m) const {
     if (m_rows != m.m_rows|| m_columns != m.m_columns) {throw Wrong_matrix_size{};}
-    Matrix m_sum(m_rows, m_columns);
-    for (size_t i=0; i<(m_rows*m_columns); ++i) {
-        m_sum.m_ptr[i] = m.m_ptr[i] - m_ptr[i];
-    }
+    Matrix m_sum(*this);
+    m_sum-=m;
     return m_sum;
-}
-
-Linalg::Matrix Linalg::Matrix::operator-(Matrix&& m) const {
-    if (m_rows != m.m_rows|| m_columns != m.m_columns) {throw Wrong_matrix_size{};}
-    Matrix m_sum(m_rows, m_columns);
-    for (size_t i=0; i<(m_rows*m_columns); ++i) {
-        m_sum.m_ptr[i] = m.m_ptr[i] - m_ptr[i];
-    }
-    return m_sum;
-    //доделать
 }
 
 Linalg::Matrix& Linalg::Matrix::operator-=(const Matrix& m) {
-    if (m_rows != m.m_rows|| m_columns != m.m_columns) {throw Wrong_matrix_size{};}
-    for (size_t i=0; i<(m_rows*m_columns); ++i) {
-        m_ptr[i] -= m.m_ptr[i];
-    }
-    return *this;
-    //доделать
-}
-
-Linalg::Matrix& Linalg::Matrix::operator-=(Matrix&& m) {
     if (m_rows != m.m_rows|| m_columns != m.m_columns) {throw Wrong_matrix_size{};}
     for (size_t i=0; i<(m_rows*m_columns); ++i) {
         m_ptr[i] -= m.m_ptr[i];
@@ -246,15 +141,7 @@ bool Linalg::Matrix::operator==(const Matrix& m) const {
     if (this == &m) {return true;}
     if (m_columns!=m.m_columns||m_rows!=m.m_rows) {return false;}
     for (size_t i=0; i<m_rows*m_columns; ++i) {
-        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps) {return false;}
-    }
-    return true;
-}
-
-bool Linalg::Matrix::operator==(Matrix&& m) const {
-    if (m_columns!=m.m_columns||m_rows!=m.m_rows) { return false;}
-    for (size_t i=0; i<m_rows*m_columns; ++i) {
-        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps) { return false;}
+        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps*100) {return false;}
     }
     return true;
 }
@@ -262,15 +149,7 @@ bool Linalg::Matrix::operator==(Matrix&& m) const {
 bool Linalg::Matrix::operator!=(const Matrix& m) const {
     if (m_columns!=m.m_columns||m_rows!=m.m_rows) { return true;}
     for (size_t i=0; i<m_rows*m_columns; ++i) {
-        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps) { return true;}
-    }
-    return false;
-}
-
-bool Linalg::Matrix::operator!=(Matrix&& m) const {
-    if (m_columns!=m.m_columns||m_rows!=m.m_rows) { return true;}
-    for (size_t i=0; i<m_rows*m_columns; ++i) {
-        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps) { return true;}
+        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps*100) { return true;}
     }
     return false;
 }
@@ -364,7 +243,7 @@ double  Linalg::Matrix::trace() const {
         throw Wrong_matrix_size{};
     }
     double m_trace=0;
-    for (size_t i=0; i<=(m_rows); ++i) {m_trace += m_ptr[m_rows*i + i];}
+    for (size_t i=0; i<m_rows; ++i) {m_trace += m_ptr[m_rows*i + i];}
     return m_trace;
 }
 
@@ -411,57 +290,6 @@ size_t Linalg::Matrix::gauss() {
 }
 
 Linalg::Matrix Linalg::power(const Matrix& m, int& power) {
-    if (m.empty()) {
-        throw Empty_matrix{};
-    }
-    if (m.get_columns() != m.get_rows()) {
-        throw Wrong_matrix_size{};
-    }
-
-    Matrix m_return(m.get_rows(), m.get_columns());
-
-    for (size_t i = 0; i < m.get_rows(); ++i) {
-        for (size_t j = 0; j < m.get_columns(); ++j) {
-            if (i == j) {
-                m_return(i,i) = 1;
-            } else {
-                m_return(i,j) = 0;
-            }
-        }
-    }
-
-    if (power == 0) {
-        return m_return;
-    }
-
-    Matrix matrix_for_power;
-    if (power > 0) {
-        matrix_for_power = m;
-    }
-
-    if (power < 0) {
-        matrix_for_power = invert(m);
-        power = std::abs(power);
-    }
-
-    while (power > 0) {
-        if (power % 2 == 1) {
-            m_return *= matrix_for_power;
-        }
-        matrix_for_power *= matrix_for_power;
-        power /= 2;
-    }
-
-    for (size_t i = 0; i < m.get_rows() * m.get_columns(); ++i) {
-        if (std::abs(m_return.get_ptr()[i]) < eps) {
-            m_return.get_ptr()[i] = 0;
-        }
-    }
-
-    return m_return;
-}
-
-Linalg::Matrix Linalg::power(Matrix&& m, int& power) {
     if (m.empty()) {
         throw Empty_matrix{};
     }
@@ -563,130 +391,13 @@ Linalg::Matrix Linalg::power(const Matrix& m, int&& power) {
     return m_return;
 }
 
-Linalg::Matrix Linalg::power(Matrix&& m, int&& power) {
-    if (m.empty()) {
-        throw Empty_matrix{};
-    }
-    if (m.get_columns() != m.get_rows()) {
-        throw Wrong_matrix_size{};
-    }
-
-    Matrix m_return(m.get_rows(), m.get_columns());
-
-    for (size_t i = 0; i < m.get_rows(); ++i) {
-        for (size_t j = 0; j < m.get_columns(); ++j) {
-            if (i == j) {
-                m_return(i,i) = 1;
-            } else {
-                m_return(i,j) = 0;
-            }
-        }
-    }
-
-    if (power == 0) {
-        return m_return;
-    }
-
-    Matrix matrix_for_power;
-    if (power > 0) {
-        matrix_for_power = m;
-    }
-
-    if (power < 0) {
-        matrix_for_power = invert(m);
-        power = std::abs(power);
-    }
-
-    while (power > 0) {
-        if (power % 2 == 1) {
-            m_return *= matrix_for_power;
-        }
-        matrix_for_power *= matrix_for_power;
-        power /= 2;
-    }
-
-    for (size_t i = 0; i < m.get_rows() * m.get_columns(); ++i) {
-        if (std::abs(m_return.get_ptr()[i]) < eps) {
-            m_return.get_ptr()[i] = 0;
-        }
-    }
-
-    return m_return;
-}
-
-Linalg::Matrix Linalg::concatenate(const Linalg::Matrix& m_left, const Linalg::Matrix& m_right) {
+Linalg::Matrix Linalg::concatenate(const Matrix& m_left, const Matrix& m_right) {
     if (m_left.empty()||m_right.empty()) {
         throw Empty_matrix{};
     }
 
     if (m_left.get_rows() != m_right.get_rows()) {
         throw Wrong_matrix_size{};
-    }
-
-    Matrix m_return(m_left.get_rows(), m_left.get_columns() + m_right.get_columns());
-
-    for (size_t i = 0; i < m_left.get_rows(); ++i) {
-        for (size_t j = 0; j < m_left.get_columns(); ++j) {
-            m_return(i, j) = m_left(i, j);
-        }
-        for (size_t j = 0; j < m_right.get_columns(); ++j) {
-            m_return(i, m_left.get_columns() + j) = m_right(i, j);
-        }
-    }
-
-    return m_return;
-}
-
-Linalg::Matrix Linalg::concatenate(Linalg::Matrix &&m_left, const Linalg::Matrix &m_right) {
-    if (m_left.empty()||m_right.empty()) {
-        throw Empty_matrix{};
-    }
-    if (m_left.get_rows() != m_right.get_rows()) {
-        throw Wrong_matrix_size{};;
-    }
-
-    Matrix m_return(m_left.get_rows(), m_left.get_columns() + m_right.get_columns());
-
-    for (size_t i = 0; i < m_left.get_rows(); ++i) {
-        for (size_t j = 0; j < m_left.get_columns(); ++j) {
-            m_return(i, j) = m_left(i, j);
-        }
-        for (size_t j = 0; j < m_right.get_columns(); ++j) {
-            m_return(i, m_left.get_columns() + j) = m_right(i, j);
-        }
-    }
-
-    return m_return;
-}
-
-Linalg::Matrix Linalg::concatenate(Linalg::Matrix &&m_left, Linalg::Matrix &&m_right) {
-    if (m_left.empty()||m_right.empty()) {
-        throw Empty_matrix{};
-    }
-    if (m_left.get_rows() != m_right.get_rows()) {
-        throw Wrong_matrix_size{};;
-    }
-
-    Matrix m_return(m_left.get_rows(), m_left.get_columns() + m_right.get_columns());
-
-    for (size_t i = 0; i < m_left.get_rows(); ++i) {
-        for (size_t j = 0; j < m_left.get_columns(); ++j) {
-            m_return(i, j) = m_left(i, j);
-        }
-        for (size_t j = 0; j < m_right.get_columns(); ++j) {
-            m_return(i, m_left.get_columns() + j) = m_right(i, j);
-        }
-    }
-
-    return m_return;
-}
-
-Linalg::Matrix Linalg::concatenate(const Linalg::Matrix &m_left, Linalg::Matrix &&m_right) {
-    if (m_left.empty()||m_right.empty()) {
-        throw Empty_matrix{};
-    }
-    if (m_left.get_rows() != m_right.get_rows()) {
-        throw Wrong_matrix_size{};;
     }
 
     Matrix m_return(m_left.get_rows(), m_left.get_columns() + m_right.get_columns());
@@ -710,20 +421,7 @@ Linalg::Matrix Linalg::transpose(const Matrix& m) {
     Matrix m_return(m.get_columns(), m.get_rows());
     for (size_t i = 0; i < m.get_rows(); ++i) {
         for (size_t j =0; j < m.get_columns(); ++j) {
-            m_return(i,j) = m(j,i);
-        }
-    }
-    return m_return;
-}
-
-Linalg::Matrix Linalg::transpose(Matrix&& m) {
-    if (m.empty()) {
-        throw Empty_matrix{};
-    }
-    Matrix m_return(m.get_columns(), m.get_rows());
-    for (size_t i = 0; i < m.get_rows(); ++i) {
-        for (size_t j =0; j < m.get_columns(); ++j) {
-            m_return(i,j) = m(j,i);
+            m_return(j,i) = m(i,j);
         }
     }
     return m_return;
@@ -736,7 +434,7 @@ Linalg::Matrix Linalg::invert(const Matrix& m) {
     Matrix m_L(n, n);
     Matrix m_U(n, n);
 
-    for (size_t i=0; i<n; ++i) {
+    for (size_t i=0; i<n*n; ++i) {
         m_L.get_ptr()[i] = 0;
         m_U.get_ptr()[i] = 0;
     }
@@ -749,7 +447,9 @@ Linalg::Matrix Linalg::invert(const Matrix& m) {
     // Инициализация первой строки и первого столбца
     for (size_t j = 0; j < n; j++) {
         m_U(0,j) = m(0,j);
-        if (m_U(0,0) == 0) {throw Singular_matrix{};}
+        if (std::abs(m_U(0,0)) < eps) {
+            throw Singular_matrix{};
+        }
         m_L(j,0) = m(j,0) / m_U(0,0);
     }
 
@@ -757,7 +457,9 @@ Linalg::Matrix Linalg::invert(const Matrix& m) {
     for (size_t i = 1; i < n; i++) {
         for (size_t j = i; j < n; j++) {
             m_U(i,j) = m(i,j) - get_sum_U(i,j,m_L,m_U);
-            if (m_U(i,i) == 0) {throw Singular_matrix{};}
+            if (std::abs(m_U(i,i)) < eps) {
+                throw Singular_matrix{};
+            }
             m_L(j,i) = (m(j,i) - get_sum_L(i, j, m_L, m_U)) / m_U(i,i);
         }
     }

@@ -44,13 +44,9 @@ namespace Linalg {
 
         double det() const;
 
-        void print() const;
-
         size_t gauss();
 
         Matrix &operator=(const Matrix& m);
-
-        Matrix &operator=(Matrix&& m) noexcept;
 
         Matrix operator+(const Matrix& m) const;
 
@@ -60,39 +56,18 @@ namespace Linalg {
 
         Matrix &operator-=(const Matrix& m);
 
-        Matrix operator*(const Matrix& m) const;
-
         Matrix &operator*=(const Matrix& m);
-
-        Matrix operator+(Matrix&& m) const;
-
-        Matrix &operator+=(Matrix&& m);
-
-        Matrix operator-(Matrix&& m) const;
-
-        Matrix &operator-=(Matrix&& m);
-
-        Matrix operator*(Matrix&& m) const;
-
-        Matrix &operator*=(Matrix&& m);
-
-        Matrix operator*(const double& v);
 
         Matrix &operator*=(const double& v);
 
         bool operator==(const Matrix& m) const;
 
-        bool operator==(Matrix&& m) const;
-
         bool operator!=(const Matrix& m) const;
-
-        bool operator!=(Matrix&& m) const;
 
         double &operator()(const size_t& m_row, const size_t& m_column);
 
         double operator()(const size_t& m_row, const size_t& m_column) const;
 
-//        double rank() const;
     private:
         size_t m_rows;
         size_t m_columns;
@@ -103,35 +78,21 @@ namespace Linalg {
 
     Matrix operator*(const double& v, const Matrix& m);
 
-    Matrix operator*(const double& v, Matrix&& m);
+    Matrix operator*( const Matrix& m, const double& v);
+
+    Matrix operator*(const Matrix& m1, const Matrix& m2);
 
     std::ostream& operator<<(std::ostream& os, const Matrix& m);
 
-    std::ostream& operator<<(std::ostream& os, Matrix&& m);
-
     Matrix power(const Matrix& m, int& power);
-
-    Matrix power(Matrix&& m, int& power);
 
     Matrix power(const Matrix& m, int&& power);
 
-    Matrix power(Matrix&& m, int&& power);
-
     Matrix concatenate(const Matrix& m_left, const Matrix& m_right);
-
-    Matrix concatenate(Matrix&& m_left, const Matrix& m_right);
-
-    Matrix concatenate(Matrix&& m_left, Matrix&& m_right);
-
-    Matrix concatenate(const Matrix& m_left, Matrix&& m_right);
 
     Matrix transpose(const Matrix& m);
 
-    Matrix transpose(Matrix&& m);
-
     Matrix invert(const Matrix& m);
-
-    Matrix invert(Matrix&& m);
 
     double get_sum_L(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U);
 
