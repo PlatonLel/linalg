@@ -11,18 +11,21 @@ class Matrix_Test : public ::testing::Test {
 class Matrix_test_pow : public ::Matrix_Test {
 protected:
     Linalg::Matrix* mat_pow_e;
-    Linalg::Matrix* mat_pow;
+    Linalg::Matrix* mat_pow_1;
+    Linalg::Matrix* mat_pow_2;
 
     // SetUp вызывается перед каждым тестом
     void SetUp() override {
         mat_pow_e = new Linalg::Matrix({{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}});
-        mat_pow = new Linalg::Matrix({{1.0, 2.0, 3.0}, {3.0, 1.0, 4.0}, {6.0, 7.0, 19.0}});
+        mat_pow_1 = new Linalg::Matrix({ {0.9, 2.0, 3.0}, {4.0, 5.0, 6.0}, {1, 2, 3} });
+        mat_pow_2 = new Linalg::Matrix({ {0.9, 2., 4.0}, {4.0, 5.0, 6.0}, {1, 2, 3} });
     }
 
     // TearDown вызывается после каждого теста
     void TearDown() override {
         delete mat_pow_e;
-        delete mat_pow;
+        delete mat_pow_2;
+        delete mat_pow_1;
     }
 };
 

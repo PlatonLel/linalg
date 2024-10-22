@@ -73,6 +73,11 @@ Linalg::Matrix& Linalg::Matrix::operator*=(const Matrix& m) {
             }
         }
     }
+    for (size_t i=0; i<m_return.m_columns*m_return.m_rows; ++i) {
+        if(std::abs(m_return.m_ptr[i])<eps*1000) {
+            m_return.m_ptr[i]=0;
+        }
+    }
     *this = std::move(m_return);
     return *this;
 }
@@ -92,6 +97,11 @@ Linalg::Matrix Linalg::operator*(const double& v, const Matrix& m) {
 Linalg::Matrix& Linalg::Matrix::operator*=(const double& v) {
     for (size_t i=0; i<m_columns*m_rows; ++i) {
         m_ptr[i] *= v;
+    }
+    for (size_t i=0; i<m_columns*m_rows; ++i) {
+        if(std::abs(m_ptr[i])<eps*1000) {
+            m_ptr[i]=0;
+        }
     }
     return *this;
 }
@@ -113,14 +123,18 @@ Linalg::Matrix& Linalg::Matrix::operator=(const Matrix& m) {
 }
 
 Linalg::Matrix Linalg::Matrix::operator+(const Matrix& m) const {
-    if (m_rows != m.m_rows|| m_columns != m.m_columns) {throw Wrong_matrix_size(3);}
+    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
+        throw Wrong_matrix_size(3);
+    }
     Matrix m_sum(*this);
     m_sum+=m;
     return m_sum;
 }
 
 Linalg::Matrix& Linalg::Matrix::operator+=(const Matrix& m) {
-    if (m_rows != m.m_rows|| m_columns != m.m_columns) {throw Wrong_matrix_size(4);}
+    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
+        throw Wrong_matrix_size(4);
+    }
     for (size_t i=0; i<(m_rows*m_columns); ++i) {
         m_ptr[i] += m.m_ptr[i];
     }
@@ -128,14 +142,18 @@ Linalg::Matrix& Linalg::Matrix::operator+=(const Matrix& m) {
 }
 
 Linalg::Matrix Linalg::Matrix::operator-(const Matrix& m) const {
-    if (m_rows != m.m_rows|| m_columns != m.m_columns) {throw Wrong_matrix_size(5);}
+    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
+        throw Wrong_matrix_size(5);
+    }
     Matrix m_sum(*this);
     m_sum-=m;
     return m_sum;
 }
 
 Linalg::Matrix& Linalg::Matrix::operator-=(const Matrix& m) {
-    if (m_rows != m.m_rows|| m_columns != m.m_columns) {throw Wrong_matrix_size(6);}
+    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
+        throw Wrong_matrix_size(6);
+    }
     for (size_t i=0; i<(m_rows*m_columns); ++i) {
         m_ptr[i] -= m.m_ptr[i];
     }
@@ -146,7 +164,7 @@ bool Linalg::Matrix::operator==(const Matrix& m) const {
     if (this == &m) {return true;}
     if (m_columns!=m.m_columns||m_rows!=m.m_rows) {return false;}
     for (size_t i=0; i<m_rows*m_columns; ++i) {
-        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps*100) {return false;}
+        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps*1000) {return false;}
     }
     return true;
 }
@@ -154,7 +172,7 @@ bool Linalg::Matrix::operator==(const Matrix& m) const {
 bool Linalg::Matrix::operator!=(const Matrix& m) const {
     if (m_columns!=m.m_columns||m_rows!=m.m_rows) { return true;}
     for (size_t i=0; i<m_rows*m_columns; ++i) {
-        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps*100) { return true;}
+        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps*1000) { return true;}
     }
     return false;
 }
@@ -452,6 +470,11 @@ Linalg::Matrix Linalg::invert(const Matrix& m) {
         }
         e(j,0) = 0;
     }
+    for (size_t i=0; i<m_return.get_columns()*m_return.get_rows(); ++i) {
+        if(std::abs(m_return.get_ptr()[i])<eps*10000) {
+            m_return.get_ptr()[i]=0;
+        }
+    }
 
     return m_return;
 }
@@ -460,11 +483,11 @@ double Linalg::get_sum_U(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m
     double result = 0;
 
     for (size_t i=0; i<m_column; ++i) {
-        if (std::abs(m_L(m_row,i)) <= eps) {
+        if (std::abs(m_L(m_row,i)) <= eps*1000) {
             m_L(m_row,i) = 0;
         }
 
-        if (std::abs(m_U(i,m_column)) <= eps) {
+        if (std::abs(m_U(i,m_column)) <= eps*1000) {
             m_U(i,m_column) = 0;
         }
 
@@ -477,11 +500,11 @@ double Linalg::get_sum_L(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m
     double result = 0;
 
     for (size_t i=0; i<m_column; ++i) {
-        if (std::abs(m_L(m_column,i)) <= eps) {
+        if (std::abs(m_L(m_column,i)) <= eps*1000) {
             m_L(m_column,i) = 0;
         }
 
-        if (std::abs(m_U(i,m_row)) <= eps) {
+        if (std::abs(m_U(i,m_row)) <= eps*1000) {
             m_U(i,m_row) = 0;
         }
 

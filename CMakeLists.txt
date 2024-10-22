@@ -1,38 +1,19 @@
 cmake_minimum_required(VERSION 3.10)
+project(testM)
 
-project(testMatrix)
 
-# Определяем стандарт C++
 set(CMAKE_CXX_STANDARD 17)
 
-# Добавляем библиотеку Linalg
+# Добавляем библиотеку Linalg и gtest
 add_subdirectory(Linalg)
+add_subdirectory(gtest/googletest)
 
-# Добавляем основной исполняемый файл
-add_executable(proga Source/main.cpp)
-target_link_libraries(proga PUBLIC Linalg)
+# Добавляем исполняемый файл для запуска тестов
+add_executable(run_tests Source/main.cpp Source/test.cpp)
 
-# Включаем тестирование
-enable_testing()
-
-# Загружаем Google Test
-include(FetchContent)
-FetchContent_Declare(
-        googletest
-        URL https://github.com/google/googletest/archive/refs/heads/main.zip
-        DOWNLOAD_EXTRACT_TIMESTAMP true
+# Линкуем с Google Test и Linalg
+target_link_libraries(run_tests PRIVATE
+        gtest
+        gtest_main
+        Linalg
 )
-
-# Собираем Google Test
-FetchContent_MakeAvailable(googletest)
-
-# Добавляем тестовый исполняемый файл
-add_executable(testM Source/test.cpp)
-
-# Линкуем тестовый файл с библиотеками Google Test и Linalg
-target_link_libraries(testM gtest_main Linalg)
-
-include_directories(D:/mine/Laboratory 1/cmake-build-debug/_deps/googletest-src/googletest/include)
-
-# Регистрируем тест
-add_test(NAME example_test COMMAND testM)

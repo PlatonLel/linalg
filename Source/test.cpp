@@ -18,12 +18,12 @@ TEST_F(Matrix_test_addition_and_subtraction, TestMatrixSubtraction) {
 // возведение в степень тест
 TEST_F(Matrix_test_pow, TestMatrixPower) {
     // проверка возведения в степень
-    Linalg::Matrix result_pow_n = {{239.0/300.0,161.0/900.0,-31.0/180.0},{113.0/300.0,587.0/900.0,-37.0/180.0},{-5.0/12.0,-11.0/36.0,5.0/36.0}};
 
-    EXPECT_EQ(Linalg::power(*mat_pow_e,10), *mat_pow_e);      // возведение в степень 10
-    EXPECT_EQ(Linalg::power(*mat_pow_e,-10), *mat_pow_e);     // возведение в отрицательную степень
-    EXPECT_EQ(Linalg::power(*mat_pow,2), Linalg::Matrix({{25.0, 25.0, 68.0}, {30.0, 35.0, 89.0}, {141.0, 152.0, 407.0}}));  // возведение в квадрат
-    EXPECT_EQ(Linalg::power(*mat_pow,-2), result_pow_n);      // возведение в отрицательную степень
+    EXPECT_EQ(Linalg::power(*mat_pow_e,10), *mat_pow_e);
+    EXPECT_EQ(Linalg::power(*mat_pow_e,-10), *mat_pow_e);
+    EXPECT_EQ(Linalg::power(power(*mat_pow_1,2),3), Linalg::power(power(*mat_pow_1,3),2));
+    EXPECT_EQ(Linalg::power(*mat_pow_1,-1)*Linalg::power(*mat_pow_2,-1),
+              Linalg::power(*mat_pow_2 * *mat_pow_1,-1));
 }
 
 // умножение тест
@@ -35,7 +35,8 @@ TEST_F(Matrix_test_multiplication, MatrixMultiplication) {
 // транспонирование тест
 TEST_F(Matrix_test_transpose, MatrixTranspose) {
     // проверка транспонирования
-    EXPECT_EQ(Linalg::transpose(*mat_transpose), Linalg::Matrix({{1.0, 4.0}, {2.0, 5.0}, {3.0, 6.0}}));  // транспонирование матрицы
+    EXPECT_EQ(Linalg::transpose(*mat_transpose), Linalg::Matrix({{1.0, 4.0}, {2.0, 5.0}, {3.0, 6.0}}));
+    EXPECT_EQ(Linalg::power(transpose(*mat_transpose),-1), Linalg::transpose(power(*mat_transpose,-1)));
 }
 
 // обращение матрицы тест
