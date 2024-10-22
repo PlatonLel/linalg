@@ -2,7 +2,8 @@
 
 int main() {
 
-    Linalg::Matrix m5 = {{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}};
-    Linalg::Matrix m8 = Linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}}) + Linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
-    std::cout << m8;
+    Linalg::Matrix m5 = {{3.0, 2.0}, {5.0, 7.0}, {11.0, 13.0}};
+    Linalg::Matrix m8(0);
+    m5.gauss();
+    std::cout << m5;
 }

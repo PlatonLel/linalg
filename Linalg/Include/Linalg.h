@@ -1,10 +1,12 @@
 #pragma once
-#include <cstdio>
-#include <cmath>
-#include <iostream>
-#include <vector>
-#include <sstream>
-#include <iomanip>
+#include <cmath> //std::sqrt, std::abs
+#include <utility> //std::swap, std::move
+#include <initializer_list> //std::initializer_list
+#include <limits> //std::numeric_limits
+#include <sstream>   // std::ostringstream
+#include <iomanip>   // std::setw
+#include <algorithm> // std::max
+#include <iostream> //std::cout
 
 
 namespace Linalg {
@@ -32,7 +34,7 @@ namespace Linalg {
 
         double *get_ptr() const noexcept { return m_ptr; }
 
-        void swap_rows(const size_t& row1,const size_t& row2);
+        void swap_rows(const size_t& row1,const size_t& row2) noexcept;
 
         bool empty() const noexcept { return ((m_ptr == nullptr)||(m_columns==0 && m_rows==0)); }
 
@@ -43,8 +45,8 @@ namespace Linalg {
         double trace() const;
 
         double det() const;
-
-        size_t gauss();
+//метод гаусс возвращает количество раз, когда строки менялись местами, он нужен для det(), но можно вызвать для любой матрицы
+        size_t gauss() noexcept;
 
         Matrix &operator=(const Matrix& m);
 
@@ -84,16 +86,16 @@ namespace Linalg {
 
     std::ostream& operator<<(std::ostream& os, const Matrix& m);
 
-    Matrix power(const Matrix& m, int& power);
-
-    Matrix power(const Matrix& m, int&& power);
+    Matrix power(const Matrix& m,const int& p);
 
     Matrix concatenate(const Matrix& m_left, const Matrix& m_right);
 
     Matrix transpose(const Matrix& m);
 
     Matrix invert(const Matrix& m);
-
+// ниже находятся 4 функции, которые вычисляют элементы матриц L и U соответственно в разложении матрицы, которая передается в invert
+//а также проихводят прямую подстановку единичного вектора и обратную подстановку вектора, который является результатом прямой
+//ф
     double get_sum_L(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U);
 
     double get_sum_U(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U);
@@ -101,19 +103,27 @@ namespace Linalg {
     Matrix forward_substitution(const Matrix& m_L, const Matrix& b);
 
     Matrix backward_substitution(const Matrix& m_U, const Matrix& y);
+//класс исключений, от которого будут наследовать остальные
+    class Matrix_exception {
+    public:
+        std::string what() {return description;}
+    protected:
+        std::string description;
+    };
+//в зависимости от параметра задается значение description
+    class Wrong_matrix_size: public ::Linalg::Matrix_exception {
+    public:
+        Wrong_matrix_size(size_t p);
+    };
+
+    class Empty_matrix: public ::Linalg::Matrix_exception {
+    public:
+        Empty_matrix(size_t p);
+    };
+
+    class Singular_matrix: public ::Linalg::Matrix_exception {
+    public:
+        Singular_matrix(size_t p);
+    };
 }
 
-class Wrong_matrix_size {
-public:
-    Wrong_matrix_size() {};
-};
-
-class Empty_matrix {
-public:
-    Empty_matrix() {};
-};
-
-class Singular_matrix {
-public:
-    Singular_matrix() {};
-};

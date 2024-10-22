@@ -264,20 +264,17 @@ protected:
     }
 };
 
-//одна строка или столбец
-class Matrix_test_single_row_or_column : public ::Matrix_Test {
+//одна строка
+class Matrix_test_single_row : public ::Matrix_Test {
 protected:
     Linalg::Matrix* single_row_matrix;
-    Linalg::Matrix* single_column_matrix;
 
     void SetUp() override {
         single_row_matrix = new Linalg::Matrix({{1.0, 2.0, 3.0}});
-        single_column_matrix = new Linalg::Matrix(std::initializer_list<std::initializer_list<double>>{{1.0}, {2.0}, {3.0}});
     }
 
     void TearDown() override {
         delete single_row_matrix;
-        delete single_column_matrix;
     }
 };
 
@@ -329,7 +326,19 @@ protected:
     }
 };
 
+class Matrix_test_norm : public ::Matrix_Test {
+protected:
+    Linalg::Matrix* mat;
 
+    void SetUp() override {
+         mat = new Linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}});
+    }
+
+    void TearDown() override {
+        delete mat;
+    };
+
+};
 
 
 
