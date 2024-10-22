@@ -35,7 +35,7 @@ TEST_F(Matrix_test_multiplication, MatrixMultiplication) {
 TEST_F(Matrix_test_transpose, MatrixTranspose) {
 
     EXPECT_EQ(Linalg::transpose(*mat_transpose), Linalg::Matrix({{1.0, 4.0}, {2.0, 5.0}, {3.0, 6.0}}));
-    EXPECT_EQ(Linalg::power(transpose(*mat_transpose),-1), Linalg::transpose(power(*mat_transpose,-1)));
+    EXPECT_EQ(Linalg::power(transpose(*mat_transpose_2),-1), Linalg::transpose(power(*mat_transpose_2,-1)));
 }
 
 // обращение матрицы тест

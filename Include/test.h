@@ -14,14 +14,12 @@ protected:
     Linalg::Matrix* mat_pow_1;
     Linalg::Matrix* mat_pow_2;
 
-    // SetUp вызывается перед каждым тестом
     void SetUp() override {
         mat_pow_e = new Linalg::Matrix({{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}});
-        mat_pow_1 = new Linalg::Matrix({ {0.9, 2.0, 3.0}, {4.0, 5.0, 6.0}, {1, 2, 3} });
-        mat_pow_2 = new Linalg::Matrix({ {0.9, 2., 4.0}, {4.0, 5.0, 6.0}, {1, 2, 3} });
+        mat_pow_1 = new Linalg::Matrix({{{1.0, 2.0, 3.0}, {3.0, 1.0, 4.0}, {6.0, 7.0, 19.0}}});
+        mat_pow_2 = new Linalg::Matrix({ {0.9, 2.0, 4.0}, {4.0, 5.0, 6.0}, {1.0, 2.0, 3.0} });
     }
 
-    // TearDown вызывается после каждого теста
     void TearDown() override {
         delete mat_pow_e;
         delete mat_pow_2;
@@ -36,15 +34,13 @@ protected:
     Linalg::Matrix* mat_sum2;
 
 
-    // SetUp вызывается перед каждым тестом
     void SetUp() override {
-        mat_sum1 = new Linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}});  // Инициализация матриц
+        mat_sum1 = new Linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}});
         mat_sum2 = new Linalg::Matrix({{9.0, 8.0, 7.0}, {6.0, 5.0, 4.0}, {3.0, 2.0, 1.0}});
     }
 
-    // TearDown вызывается после каждого теста
     void TearDown() override {
-        delete mat_sum1;  // Освобождаем ресурсы
+        delete mat_sum1;
         delete mat_sum2;
     }};
 
@@ -69,13 +65,16 @@ protected:
 class Matrix_test_transpose : public ::Matrix_Test {
 protected:
     Linalg::Matrix* mat_transpose;
+    Linalg::Matrix* mat_transpose_2;
 
     void SetUp() override {
         mat_transpose = new Linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
+        mat_transpose_2 = new Linalg::Matrix({{1.0, 2.0, 3.0}, {3.0, 1.0, 4.0}, {6.0, 7.0, 19.0}});
     }
 
     void TearDown() override {
         delete mat_transpose;
+        delete mat_transpose_2;
     }
 };
 
@@ -87,7 +86,7 @@ protected:
 
     void SetUp() override {
         mat_invertible = new Linalg::Matrix({{4.0, 7.0}, {2.0, 6.0}});
-        mat_singular = new Linalg::Matrix({{1.0, 2.0}, {2.0, 4.0}});  // невозможно инвертировать
+        mat_singular = new Linalg::Matrix({{1.0, 2.0}, {2.0, 4.0}});
     }
 
     void TearDown() override {
