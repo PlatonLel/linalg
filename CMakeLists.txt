@@ -14,6 +14,5 @@ add_executable(run_tests Source/main.cpp Source/test.cpp)
 # Линкуем с Google Test и linalg
 target_link_libraries(run_tests PRIVATE
         gtest
-        gtest_main
         Linalg
 )
