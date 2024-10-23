@@ -118,7 +118,7 @@ linalg::Matrix linalg::operator*(const double& v, const Matrix& m) {
     return m_return;
 }
 
-linalg::Matrix& linalg::Matrix::operator*=(const double& v) {
+linalg::Matrix& linalg::Matrix::operator*=(const double& v) noexcept {
     for (size_t i=0; i<m_columns*m_rows; ++i) {
         m_ptr[i] *= v;
     }

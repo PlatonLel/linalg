@@ -54,7 +54,7 @@ namespace linalg {
 
         Matrix operator+(const Matrix& m) const;
 
-        Matrix &operator+=(const Matrix& m);
+        Matrix &operator+=(const Matrix& m) ;
 
         Matrix operator-(const Matrix& m) const;
 
@@ -62,7 +62,7 @@ namespace linalg {
 
         Matrix &operator*=(const Matrix& m);
 
-        Matrix &operator*=(const double& v);
+        Matrix &operator*=(const double& v) noexcept;
 
         bool operator==(const Matrix& m) const;
 
