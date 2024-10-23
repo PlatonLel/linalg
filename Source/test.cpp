@@ -163,7 +163,3 @@ TEST_F(Matrix_test_norm, TestNorm) {
 
     EXPECT_NEAR(mat->norm(), 16.88194, 1e-5);
 }
-
-
-
-
