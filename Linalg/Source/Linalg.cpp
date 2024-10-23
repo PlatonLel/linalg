@@ -53,7 +53,7 @@ linalg::Matrix::Matrix(const size_t& rows, const size_t& columns): m_rows{rows},
 }
 
 //перемещающий конструктор
-linalg::Matrix::Matrix(Matrix&& m) noexcept {
+linalg::Matrix::Matrix(Matrix&& m) noexcept : m_rows{0}, m_columns{0}, m_ptr{nullptr} {
     std::swap(m_ptr, m.m_ptr);
     std::swap(m_rows, m.m_rows);
     std::swap(m_columns, m.m_columns);
