@@ -14,9 +14,9 @@ namespace linalg {
     public:
         Matrix() noexcept : m_rows{0}, m_columns{0}, m_ptr{nullptr} {}
 
-        Matrix(const size_t& rows) : m_rows{rows}, m_columns{1} { m_ptr = new double[rows]; }
+        Matrix(const size_t& rows);
 
-        Matrix(const size_t& rows, const size_t& columns) : m_rows{rows}, m_columns{columns} {m_ptr = new double[columns * rows];}
+        Matrix(const size_t& rows, const size_t& columns);
 
         Matrix(Matrix&& m) noexcept;
 
@@ -38,7 +38,7 @@ namespace linalg {
 
         bool empty() const noexcept { return ((m_ptr == nullptr)||(m_columns==0 && m_rows==0)); }
 
-        void reshape(const size_t& new_columns,const size_t& new_rows);
+        void reshape(const size_t& rows,const size_t& new_columns);
 
         double norm() const;
 
@@ -48,7 +48,9 @@ namespace linalg {
 //метод гаусс возвращает количество раз, когда строки менялись местами, он нужен для det(), но можно вызвать для любой матрицы
         size_t gauss() noexcept;
 
-        Matrix &operator=(const Matrix& m);
+        Matrix &operator=(Matrix& m);
+
+        Matrix &operator=(Matrix&& m);
 
         Matrix operator+(const Matrix& m) const;
 
