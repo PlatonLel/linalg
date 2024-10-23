@@ -269,7 +269,7 @@ double linalg::Matrix::norm() const {
 
 void linalg::Matrix::reshape(const size_t& new_rows, const size_t& new_columns) {
     if(this->empty()) {
-
+        return;
     }
     if (new_columns * new_rows != m_columns * m_rows) {
         throw Wrong_matrix_size(8);
