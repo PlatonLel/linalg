@@ -10,14 +10,14 @@ class Matrix_Test : public ::testing::Test {
 // класс для тестирования возведения в степень
 class Matrix_test_pow : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat_pow_e;
-    Linalg::Matrix* mat_pow_1;
-    Linalg::Matrix* mat_pow_2;
+    linalg::Matrix* mat_pow_e;
+    linalg::Matrix* mat_pow_1;
+    linalg::Matrix* mat_pow_2;
 
     void SetUp() override {
-        mat_pow_e = new Linalg::Matrix({{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}});
-        mat_pow_1 = new Linalg::Matrix({{{1.0, 2.0, 3.0}, {3.0, 1.0, 4.0}, {6.0, 7.0, 19.0}}});
-        mat_pow_2 = new Linalg::Matrix({ {0.9, 2.0, 4.0}, {4.0, 5.0, 6.0}, {1.0, 2.0, 3.0} });
+        mat_pow_e = new linalg::Matrix({{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}});
+        mat_pow_1 = new linalg::Matrix({{{1.0, 2.0, 3.0}, {3.0, 1.0, 4.0}, {6.0, 7.0, 19.0}}});
+        mat_pow_2 = new linalg::Matrix({{0.9, 2.0, 4.0}, {4.0, 5.0, 6.0}, {1.0, 2.0, 3.0} });
     }
 
     void TearDown() override {
@@ -30,13 +30,13 @@ protected:
 //класс для тестирования суммирования и вычитания
 class Matrix_test_addition_and_subtraction : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat_sum1;
-    Linalg::Matrix* mat_sum2;
+    linalg::Matrix* mat_sum1;
+    linalg::Matrix* mat_sum2;
 
 
     void SetUp() override {
-        mat_sum1 = new Linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}});
-        mat_sum2 = new Linalg::Matrix({{9.0, 8.0, 7.0}, {6.0, 5.0, 4.0}, {3.0, 2.0, 1.0}});
+        mat_sum1 = new linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}});
+        mat_sum2 = new linalg::Matrix({{9.0, 8.0, 7.0}, {6.0, 5.0, 4.0}, {3.0, 2.0, 1.0}});
     }
 
     void TearDown() override {
@@ -47,12 +47,12 @@ protected:
 //класс для тестирования умножения
 class Matrix_test_multiplication : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat_mult1;
-    Linalg::Matrix* mat_mult2;
+    linalg::Matrix* mat_mult1;
+    linalg::Matrix* mat_mult2;
 
     void SetUp() override {
-        mat_mult1 = new Linalg::Matrix({{1.0, 2.0}, {3.0, 4.0}});
-        mat_mult2 = new Linalg::Matrix({{2.0, 0.0}, {1.0, 2.0}});
+        mat_mult1 = new linalg::Matrix({{1.0, 2.0}, {3.0, 4.0}});
+        mat_mult2 = new linalg::Matrix({{2.0, 0.0}, {1.0, 2.0}});
     }
 
     void TearDown() override {
@@ -64,12 +64,12 @@ protected:
 //транспонирование
 class Matrix_test_transpose : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat_transpose;
-    Linalg::Matrix* mat_transpose_2;
+    linalg::Matrix* mat_transpose;
+    linalg::Matrix* mat_transpose_2;
 
     void SetUp() override {
-        mat_transpose = new Linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
-        mat_transpose_2 = new Linalg::Matrix({{1.0, 2.0, 3.0}, {3.0, 1.0, 4.0}, {6.0, 7.0, 19.0}});
+        mat_transpose = new linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
+        mat_transpose_2 = new linalg::Matrix({{1.0, 2.0, 3.0}, {3.0, 1.0, 4.0}, {6.0, 7.0, 19.0}});
     }
 
     void TearDown() override {
@@ -81,12 +81,12 @@ protected:
 //обратная матрица тест
 class Matrix_test_inversion : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat_invertible;
-    Linalg::Matrix* mat_singular;
+    linalg::Matrix* mat_invertible;
+    linalg::Matrix* mat_singular;
 
     void SetUp() override {
-        mat_invertible = new Linalg::Matrix({{4.0, 7.0}, {2.0, 6.0}});
-        mat_singular = new Linalg::Matrix({{1.0, 2.0}, {2.0, 4.0}});
+        mat_invertible = new linalg::Matrix({{4.0, 7.0}, {2.0, 6.0}});
+        mat_singular = new linalg::Matrix({{1.0, 2.0}, {2.0, 4.0}});
     }
 
     void TearDown() override {
@@ -98,10 +98,10 @@ protected:
 //умножение на число
 class Matrix_test_scalar_multiplication : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat_scalar;
+    linalg::Matrix* mat_scalar;
 
     void SetUp() override {
-        mat_scalar = new Linalg::Matrix({{1.0, 2.0}, {3.0, 4.0}});
+        mat_scalar = new linalg::Matrix({{1.0, 2.0}, {3.0, 4.0}});
     }
 
     void TearDown() override {
@@ -112,10 +112,10 @@ protected:
 //определитель
 class Matrix_test_determinant : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat_determinant;
+    linalg::Matrix* mat_determinant;
 
     void SetUp() override {
-        mat_determinant = new Linalg::Matrix({{1.0, 2.0}, {3.0, 4.0}});
+        mat_determinant = new linalg::Matrix({{1.0, 2.0}, {3.0, 4.0}});
     }
 
     void TearDown() override {
@@ -126,12 +126,12 @@ protected:
 //матрицы с большими числами
 class Matrix_test_large_numbers : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat_large;
-    Linalg::Matrix* mat_small;
+    linalg::Matrix* mat_large;
+    linalg::Matrix* mat_small;
 
     void SetUp() override {
-        mat_large = new Linalg::Matrix({{1e18, 2e18}, {3e18, 4e18}});
-        mat_small = new Linalg::Matrix({{1e-18, 2e-18}, {3e-18, 4e-18}});
+        mat_large = new linalg::Matrix({{1e18, 2e18}, {3e18, 4e18}});
+        mat_small = new linalg::Matrix({{1e-18, 2e-18}, {3e-18, 4e-18}});
     }
 
     void TearDown() override {
@@ -143,12 +143,12 @@ protected:
 //след
 class Matrix_test_trace : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat_square;
-    Linalg::Matrix* mat_non_square;
+    linalg::Matrix* mat_square;
+    linalg::Matrix* mat_non_square;
 
     void SetUp() override {
-        mat_square = new Linalg::Matrix({{1.0, 0.0}, {0.0, 1.0}});
-        mat_non_square = new Linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});  // Неквадратная
+        mat_square = new linalg::Matrix({{1.0, 0.0}, {0.0, 1.0}});
+        mat_non_square = new linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});  // Неквадратная
     }
 
     void TearDown() override {
@@ -161,12 +161,12 @@ protected:
 // сложение с нулевой матрицей
 class Matrix_test_zero_matrix_addition : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat1;
-    Linalg::Matrix* zero_matrix;
+    linalg::Matrix* mat1;
+    linalg::Matrix* zero_matrix;
 
     void SetUp() override {
-        mat1 = new Linalg::Matrix({{1.0, 2.0}, {3.0, 4.0}});
-        zero_matrix = new Linalg::Matrix({{0.0,0.0},{0.0,0.0}});
+        mat1 = new linalg::Matrix({{1.0, 2.0}, {3.0, 4.0}});
+        zero_matrix = new linalg::Matrix({{0.0, 0.0}, {0.0, 0.0}});
     }
 
     void TearDown() override {
@@ -178,10 +178,10 @@ protected:
 //транспонирование не квадратной
 class Matrix_test_non_square_transpose : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat_non_square;
+    linalg::Matrix* mat_non_square;
 
     void SetUp() override {
-        mat_non_square = new Linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
+        mat_non_square = new linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
     }
 
     void TearDown() override {
@@ -192,10 +192,10 @@ protected:
 //для доступа вне индексов
 class Matrix_test_out_of_bounds : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat_bounds;
+    linalg::Matrix* mat_bounds;
 
     void SetUp() override {
-        mat_bounds = new Linalg::Matrix({{1.0, 2.0}, {3.0, 4.0}});
+        mat_bounds = new linalg::Matrix({{1.0, 2.0}, {3.0, 4.0}});
     }
 
     void TearDown() override {
@@ -206,12 +206,12 @@ protected:
 //умножение не квадратных матриц
 class Matrix_test_multiplication_identity_non_square : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat_non_square;
-    Linalg::Matrix* identity_non_square;
+    linalg::Matrix* mat_non_square;
+    linalg::Matrix* identity_non_square;
 
     void SetUp() override {
-        mat_non_square = new Linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
-        identity_non_square = new Linalg::Matrix({{1.0, 0.0}, {0.0, 1.0}, {0.0, 0.0}});
+        mat_non_square = new linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
+        identity_non_square = new linalg::Matrix({{1.0, 0.0}, {0.0, 1.0}, {0.0, 0.0}});
     }
 
     void TearDown() override {
@@ -224,12 +224,12 @@ protected:
 //умножение пустых матриц
 class Matrix_test_empty_multiplication : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* empty_matrix1;
-    Linalg::Matrix* empty_matrix2;
+    linalg::Matrix* empty_matrix1;
+    linalg::Matrix* empty_matrix2;
 
     void SetUp() override {
-        empty_matrix1 = new Linalg::Matrix(0, 0);
-        empty_matrix2 = new Linalg::Matrix(0, 0);
+        empty_matrix1 = new linalg::Matrix(0, 0);
+        empty_matrix2 = new linalg::Matrix(0, 0);
     }
 
     void TearDown() override {
@@ -241,10 +241,10 @@ protected:
 //полупустая матрица
 class Matrix_test_sparse_matrices : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* sparse_matrix;
+    linalg::Matrix* sparse_matrix;
 
     void SetUp() override {
-        sparse_matrix = new Linalg::Matrix({{0.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 0.0}});
+        sparse_matrix = new linalg::Matrix({{0.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 0.0}});
     }
 
     void TearDown() override {
@@ -255,10 +255,10 @@ protected:
 //полностью единичная матрица
 class Matrix_test_all_ones : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* all_ones_matrix;
+    linalg::Matrix* all_ones_matrix;
 
     void SetUp() override {
-        all_ones_matrix = new Linalg::Matrix({{1.0, 1.0}, {1.0, 1.0}});
+        all_ones_matrix = new linalg::Matrix({{1.0, 1.0}, {1.0, 1.0}});
     }
 
     void TearDown() override {
@@ -269,10 +269,10 @@ protected:
 //одна строка
 class Matrix_test_single_row : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* single_row_matrix;
+    linalg::Matrix* single_row_matrix;
 
     void SetUp() override {
-        single_row_matrix = new Linalg::Matrix({{1.0, 2.0, 3.0}});
+        single_row_matrix = new linalg::Matrix({{1.0, 2.0, 3.0}});
     }
 
     void TearDown() override {
@@ -283,12 +283,12 @@ protected:
 //очень маленькая разница
 class Matrix_test_floating_point_precision : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat1;
-    Linalg::Matrix* mat2;
+    linalg::Matrix* mat1;
+    linalg::Matrix* mat2;
 
     void SetUp() override {
-        mat1 = new Linalg::Matrix({{1.0000001, 2.0000001}, {3.0000001, 4.0000001}});
-        mat2 = new Linalg::Matrix({{1.0000002, 2.0000002}, {3.0000002, 4.0000002}});
+        mat1 = new linalg::Matrix({{1.0000001, 2.0000001}, {3.0000001, 4.0000001}});
+        mat2 = new linalg::Matrix({{1.0000002, 2.0000002}, {3.0000002, 4.0000002}});
     }
 
     void TearDown() override {
@@ -300,10 +300,10 @@ protected:
 //решейп
 class Matrix_test_reshape : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat_modify;
+    linalg::Matrix* mat_modify;
 
     void SetUp() override {
-        mat_modify = new Linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
+        mat_modify = new linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}});
     }
 
     void TearDown() override {
@@ -314,12 +314,12 @@ protected:
 //умножение нулевой матрицы
 class Matrix_test_zero_matrix_multiplication : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* zero_matrix;
-    Linalg::Matrix* mat;
+    linalg::Matrix* zero_matrix;
+    linalg::Matrix* mat;
 
     void SetUp() override {
-        zero_matrix = new Linalg::Matrix({{0.0,0.0,0.0},{0.0,0.0,0.0}});
-        mat = new Linalg::Matrix({{1.0, 2.0}, {3.0, 4.0}, {5.0, 6.0}});
+        zero_matrix = new linalg::Matrix({{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}});
+        mat = new linalg::Matrix({{1.0, 2.0}, {3.0, 4.0}, {5.0, 6.0}});
     }
 
     void TearDown() override {
@@ -330,10 +330,10 @@ protected:
 
 class Matrix_test_norm : public ::Matrix_Test {
 protected:
-    Linalg::Matrix* mat;
+    linalg::Matrix* mat;
 
     void SetUp() override {
-         mat = new Linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}});
+         mat = new linalg::Matrix({{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}});
     }
 
     void TearDown() override {

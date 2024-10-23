@@ -9,7 +9,7 @@
 #include <iostream> //std::cout
 
 
-namespace Linalg {
+namespace linalg {
     class Matrix {
     public:
         Matrix() noexcept : m_rows{0}, m_columns{0}, m_ptr{nullptr} {}
@@ -38,7 +38,7 @@ namespace Linalg {
 
         bool empty() const noexcept { return ((m_ptr == nullptr)||(m_columns==0 && m_rows==0)); }
 
-        void reshape(const size_t& new_m_columns,const size_t& new_m_rows);
+        void reshape(const size_t& new_columns,const size_t& new_rows);
 
         double norm() const;
 
@@ -111,17 +111,17 @@ namespace Linalg {
         std::string description;
     };
 //в зависимости от параметра задается значение description
-    class Wrong_matrix_size: public ::Linalg::Matrix_exception {
+    class Wrong_matrix_size: public ::linalg::Matrix_exception {
     public:
         Wrong_matrix_size(size_t p);
     };
 
-    class Empty_matrix: public ::Linalg::Matrix_exception {
+    class Empty_matrix: public ::linalg::Matrix_exception {
     public:
         Empty_matrix(size_t p);
     };
 
-    class Singular_matrix: public ::Linalg::Matrix_exception {
+    class Singular_matrix: public ::linalg::Matrix_exception {
     public:
         Singular_matrix(size_t p);
     };

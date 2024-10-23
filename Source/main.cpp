@@ -9,6 +9,4 @@ int main(int argc, char **argv) {
     // запуск всех тестов
     return RUN_ALL_TESTS();
 
-
-
 }

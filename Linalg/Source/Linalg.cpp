@@ -2,7 +2,7 @@
 
 double eps = std::numeric_limits<double>::epsilon();
 
-Linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> m)
+linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> m)
 {
     //проверка на правильный ввод
     for (const auto& row : m) {
@@ -22,7 +22,7 @@ Linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> m)
     }
 }
 
-Linalg::Matrix::Matrix(std::initializer_list<double> m) {
+linalg::Matrix::Matrix(std::initializer_list<double> m) {
     m_columns = 1;
     m_rows = m.size();
     m_ptr = new double[m_rows];
@@ -33,14 +33,14 @@ Linalg::Matrix::Matrix(std::initializer_list<double> m) {
     }
 }
 //перемещающий конструктор
-Linalg::Matrix::Matrix(Matrix&& m) noexcept {
+linalg::Matrix::Matrix(Matrix&& m) noexcept {
     m_ptr = m.m_ptr;
     m.m_ptr = nullptr;
     m_columns = m.m_columns;
     m_rows = m.m_rows;
 }
 //копирующий
-Linalg::Matrix::Matrix(const Matrix& m) {
+linalg::Matrix::Matrix(const Matrix& m) {
     m_ptr = new double[m.m_columns*m.m_rows];
     for (size_t i = 0; i<(m.m_columns*m.m_rows); ++i) {
         m_ptr[i] = m.m_ptr[i];
@@ -49,7 +49,7 @@ Linalg::Matrix::Matrix(const Matrix& m) {
     m_rows = m.m_rows;
 }
 
-Linalg::Matrix Linalg::operator*(const Matrix& m1, const Matrix& m2) {
+linalg::Matrix linalg::operator*(const Matrix& m1, const Matrix& m2) {
     if (m1.get_columns() != m2.get_rows()) {
         throw Wrong_matrix_size(1);
     }
@@ -60,7 +60,7 @@ Linalg::Matrix Linalg::operator*(const Matrix& m1, const Matrix& m2) {
     return m_return;
 }
 
-Linalg::Matrix& Linalg::Matrix::operator*=(const Matrix& m) {
+linalg::Matrix& linalg::Matrix::operator*=(const Matrix& m) {
     if (m_columns != m.m_rows) {
         throw Wrong_matrix_size(2);
     }
@@ -82,19 +82,19 @@ Linalg::Matrix& Linalg::Matrix::operator*=(const Matrix& m) {
     return *this;
 }
 
-Linalg::Matrix Linalg::operator*(const Matrix& m, const double& v) {
+linalg::Matrix linalg::operator*(const Matrix& m, const double& v) {
     Matrix m_return(m);
     m_return*=v;
     return m_return;
 }
 
-Linalg::Matrix Linalg::operator*(const double& v, const Matrix& m) {
+linalg::Matrix linalg::operator*(const double& v, const Matrix& m) {
     Matrix m_return(m);
     m_return*=v;
     return m_return;
 }
 
-Linalg::Matrix& Linalg::Matrix::operator*=(const double& v) {
+linalg::Matrix& linalg::Matrix::operator*=(const double& v) {
     for (size_t i=0; i<m_columns*m_rows; ++i) {
         m_ptr[i] *= v;
     }
@@ -106,7 +106,7 @@ Linalg::Matrix& Linalg::Matrix::operator*=(const double& v) {
     return *this;
 }
 
-Linalg::Matrix& Linalg::Matrix::operator=(const Matrix& m) {
+linalg::Matrix& linalg::Matrix::operator=(const Matrix& m) {
     if (this == &m) {
         return *this;
     }
@@ -122,16 +122,16 @@ Linalg::Matrix& Linalg::Matrix::operator=(const Matrix& m) {
     return *this;
 }
 
-Linalg::Matrix Linalg::Matrix::operator+(const Matrix& m) const {
+linalg::Matrix linalg::Matrix::operator+(const Matrix& m) const {
     if (m_rows != m.m_rows|| m_columns != m.m_columns) {
         throw Wrong_matrix_size(3);
     }
-    Matrix m_sum(*this);
-    m_sum+=m;
-    return m_sum;
+    Matrix m_return(*this);
+    m_return+=m;
+    return m_return;
 }
 
-Linalg::Matrix& Linalg::Matrix::operator+=(const Matrix& m) {
+linalg::Matrix& linalg::Matrix::operator+=(const Matrix& m) {
     if (m_rows != m.m_rows|| m_columns != m.m_columns) {
         throw Wrong_matrix_size(4);
     }
@@ -141,16 +141,16 @@ Linalg::Matrix& Linalg::Matrix::operator+=(const Matrix& m) {
     return *this;
 }
 
-Linalg::Matrix Linalg::Matrix::operator-(const Matrix& m) const {
+linalg::Matrix linalg::Matrix::operator-(const Matrix& m) const {
     if (m_rows != m.m_rows|| m_columns != m.m_columns) {
         throw Wrong_matrix_size(5);
     }
-    Matrix m_sum(*this);
-    m_sum-=m;
-    return m_sum;
+    Matrix m_return(*this);
+    m_return-=m;
+    return m_return;
 }
 
-Linalg::Matrix& Linalg::Matrix::operator-=(const Matrix& m) {
+linalg::Matrix& linalg::Matrix::operator-=(const Matrix& m) {
     if (m_rows != m.m_rows|| m_columns != m.m_columns) {
         throw Wrong_matrix_size(6);
     }
@@ -160,7 +160,7 @@ Linalg::Matrix& Linalg::Matrix::operator-=(const Matrix& m) {
     return *this;
 }
 
-bool Linalg::Matrix::operator==(const Matrix& m) const {
+bool linalg::Matrix::operator==(const Matrix& m) const {
     if (this == &m) {return true;}
     if (m_columns!=m.m_columns||m_rows!=m.m_rows) {return false;}
     for (size_t i=0; i<m_rows*m_columns; ++i) {
@@ -169,7 +169,7 @@ bool Linalg::Matrix::operator==(const Matrix& m) const {
     return true;
 }
 
-bool Linalg::Matrix::operator!=(const Matrix& m) const {
+bool linalg::Matrix::operator!=(const Matrix& m) const {
     if (m_columns!=m.m_columns||m_rows!=m.m_rows) { return true;}
     for (size_t i=0; i<m_rows*m_columns; ++i) {
         if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps*1000) { return true;}
@@ -177,21 +177,21 @@ bool Linalg::Matrix::operator!=(const Matrix& m) const {
     return false;
 }
 
-double& Linalg::Matrix::operator()(const size_t& m_row, const size_t& m_column) {
+double& linalg::Matrix::operator()(const size_t& m_row, const size_t& m_column) {
     if (m_row >= m_rows || m_column >= m_columns) {
         throw Wrong_matrix_size(7);
     }
     return m_ptr[m_row * m_columns + m_column];
 }
 
-double Linalg::Matrix::operator()(const size_t& m_row, const size_t& m_column) const {
+double linalg::Matrix::operator()(const size_t& m_row, const size_t& m_column) const {
     if (m_row >= m_rows || m_column >= m_columns) {
         throw Wrong_matrix_size(7);
     }
     return m_ptr[m_row * m_columns + m_column];
 }
 
-std::ostream& Linalg::operator<<(std::ostream& os, const Matrix& m) {
+std::ostream& linalg::operator<<(std::ostream& os, const Matrix& m) {
     if (m.empty()) {
         throw Empty_matrix(6);
     }
@@ -224,7 +224,7 @@ std::ostream& Linalg::operator<<(std::ostream& os, const Matrix& m) {
     return os;
 }
 
-double Linalg::Matrix::norm() const {
+double linalg::Matrix::norm() const {
     if (empty()) {
         throw Empty_matrix(0);
     }
@@ -235,23 +235,23 @@ double Linalg::Matrix::norm() const {
     return std::sqrt(norm);
 }
 
-void Linalg::Matrix::reshape(const size_t& new_m_rows, const size_t& new_m_columns) {
-    if (new_m_columns * new_m_rows != m_columns * m_rows) {
+void linalg::Matrix::reshape(const size_t& new_rows, const size_t& new_columns) {
+    if (new_columns * new_rows != m_columns * m_rows) {
         throw Wrong_matrix_size(8);
     }
-    m_columns = new_m_columns;
-    m_rows = new_m_rows;
+    m_columns = new_columns;
+    m_rows = new_rows;
 }
 
-void Linalg::Matrix::swap_rows(const size_t& row1, const size_t& row2) noexcept {
-    if (row1 == row2) {return;}
+void linalg::Matrix::swap_rows(const size_t& row_1, const size_t& row_2) noexcept {
+    if (row_1 == row_2) {return;}
     //по одному элементу меняем местами
     for (size_t column = 0; column < m_columns; ++column) {
-        std::swap(m_ptr[row1*m_columns + column], m_ptr[row2*m_columns + column]);
+        std::swap(m_ptr[row_1*m_columns + column], m_ptr[row_2*m_columns + column]);
     }
 }
 
-double Linalg::Matrix::det() const {
+double linalg::Matrix::det() const {
     if (empty()) {
         throw Empty_matrix(1);
     }
@@ -270,7 +270,7 @@ double Linalg::Matrix::det() const {
     return det_value;
 }
 
-double  Linalg::Matrix::trace() const {
+double  linalg::Matrix::trace() const {
     if (empty()) {
         throw Empty_matrix(2);
     }
@@ -285,7 +285,7 @@ double  Linalg::Matrix::trace() const {
     return m_trace;
 }
 //только прямой ход
-size_t Linalg::Matrix::gauss() noexcept{
+size_t linalg::Matrix::gauss() noexcept{
     size_t swap_counter = 0;
     size_t lead_element = 0;
 
@@ -324,7 +324,7 @@ size_t Linalg::Matrix::gauss() noexcept{
     return swap_counter;
 }
 
-Linalg::Matrix Linalg::power(const Matrix& m, const int& p) {
+linalg::Matrix linalg::power(const Matrix& m, const int& p) {
     int power = p;
     if (m.empty()) {
         throw Empty_matrix(3);
@@ -376,7 +376,7 @@ Linalg::Matrix Linalg::power(const Matrix& m, const int& p) {
     return m_return;
 }
 
-Linalg::Matrix Linalg::concatenate(const Matrix& m_left, const Matrix& m_right) {
+linalg::Matrix linalg::concatenate(const Matrix& m_left, const Matrix& m_right) {
     if (m_left.empty()||m_right.empty()) {
         throw Empty_matrix(4);
     }
@@ -399,7 +399,7 @@ Linalg::Matrix Linalg::concatenate(const Matrix& m_left, const Matrix& m_right) 
     return m_return;
 }
 
-Linalg::Matrix Linalg::transpose(const Matrix& m) {
+linalg::Matrix linalg::transpose(const Matrix& m) {
     if (m.empty()) {
         throw Empty_matrix(5);
     }
@@ -413,7 +413,7 @@ Linalg::Matrix Linalg::transpose(const Matrix& m) {
 }
 
 
-Linalg::Matrix Linalg::invert(const Matrix& m) {
+linalg::Matrix linalg::invert(const Matrix& m) {
     if (m.get_rows() != m.get_columns()) {
         throw Wrong_matrix_size(13);
     }
@@ -479,7 +479,7 @@ Linalg::Matrix Linalg::invert(const Matrix& m) {
     return m_return;
 }
 
-double Linalg::get_sum_U(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U) {
+double linalg::get_sum_U(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U) {
     double result = 0;
 
     for (size_t i=0; i<m_column; ++i) {
@@ -496,7 +496,7 @@ double Linalg::get_sum_U(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m
     return result;
 }
 
-double Linalg::get_sum_L(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U) {
+double linalg::get_sum_L(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U) {
     double result = 0;
 
     for (size_t i=0; i<m_column; ++i) {
@@ -513,7 +513,7 @@ double Linalg::get_sum_L(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m
     return result;
 }
 
-Linalg::Matrix Linalg::backward_substitution(const Matrix& m_U, const Matrix& y) {
+linalg::Matrix linalg::backward_substitution(const Matrix& m_U, const Matrix& y) {
     size_t n = m_U.get_rows();
     Matrix x(n);
 
@@ -528,7 +528,7 @@ Linalg::Matrix Linalg::backward_substitution(const Matrix& m_U, const Matrix& y)
     return x;
 }
 
-Linalg::Matrix Linalg::forward_substitution(const Matrix& m_L, const Matrix& b) {
+linalg::Matrix linalg::forward_substitution(const Matrix& m_L, const Matrix& b) {
     size_t n = m_L.get_rows();
     Matrix y(n);
 
@@ -543,7 +543,7 @@ Linalg::Matrix Linalg::forward_substitution(const Matrix& m_L, const Matrix& b) 
     return y;
 }
 
-Linalg::Wrong_matrix_size::Wrong_matrix_size(size_t p) {
+linalg::Wrong_matrix_size::Wrong_matrix_size(size_t p) {
     switch (p) {
         case 0: {
             description = "Wrong initializer_list in constructor of Matrix";
@@ -604,7 +604,7 @@ Linalg::Wrong_matrix_size::Wrong_matrix_size(size_t p) {
     }
 }
 
-Linalg::Empty_matrix::Empty_matrix(size_t p) {
+linalg::Empty_matrix::Empty_matrix(size_t p) {
     switch (p) {
         case 0: {
             description = "Empty matrix in norm";
@@ -637,7 +637,7 @@ Linalg::Empty_matrix::Empty_matrix(size_t p) {
     }
 }
 
-Linalg::Singular_matrix::Singular_matrix(size_t p) {
+linalg::Singular_matrix::Singular_matrix(size_t p) {
     switch (p) {
         case 0: {
             description = "Singular matrix in invert";
