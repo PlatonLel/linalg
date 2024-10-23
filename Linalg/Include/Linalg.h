@@ -28,9 +28,9 @@ namespace linalg {
 
         ~Matrix() { delete[] m_ptr; }
 
-        const size_t& get_rows() const noexcept { return m_rows; }
+        const size_t& rows() const noexcept { return m_rows; }
 
-        const size_t& get_columns() const noexcept { return m_columns; }
+        const size_t& columns() const noexcept { return m_columns; }
 
         double *get_ptr() const noexcept { return m_ptr; }
 
