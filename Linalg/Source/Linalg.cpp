@@ -10,7 +10,7 @@ linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> m): 
             throw Wrong_matrix_size(0);
         }
     }
-    if (m.size()*m.begin()->size()) {
+    if (m.size()*m.begin()->size()!=0) {
         m_rows = m.size();
         m_columns = m.begin()->size();
         m_ptr = new double[m_rows * m_columns];
