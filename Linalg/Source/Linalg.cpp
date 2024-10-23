@@ -140,8 +140,6 @@ linalg::Matrix& linalg::Matrix::operator=(Matrix&& m) {
     m.m_rows = 0;
     m.m_columns = 0;
     m.m_ptr = nullptr;
-    std::cout << "m_rows after move: " << m.m_rows << "\n";
-    std::cout << "m_columns after move: " << m.m_columns << "\n";
     return *this;
 }
 
