@@ -54,13 +54,9 @@ linalg::Matrix::Matrix(const size_t& rows, const size_t& columns): m_rows{rows},
 
 //перемещающий конструктор
 linalg::Matrix::Matrix(Matrix&& m) noexcept {
-    delete[] m_ptr;
-    m_ptr = m.m_ptr;
-    m.m_ptr = nullptr;
-    m_columns = m.m_columns;
-    m_rows = m.m_rows;
-    m.m_columns = 0;
-    m.m_rows = 0;
+    std::swap(m_ptr, m.m_ptr);
+    std::swap(m_rows, m.m_rows);
+    std::swap(m_columns, m.m_columns);
 }
 //копирующий
 linalg::Matrix::Matrix(const Matrix& m) {
@@ -133,13 +129,9 @@ linalg::Matrix& linalg::Matrix::operator=(Matrix&& m) {
     if (this == &m) {
         return *this;
     }
-    delete[] m_ptr;
-    m_ptr = m.m_ptr;
-    m_rows = m.m_rows;
-    m_columns = m.m_columns;
-    m.m_rows = 0;
-    m.m_columns = 0;
-    m.m_ptr = nullptr;
+    std::swap(m_ptr, m.m_ptr);
+    std::swap(m_rows, m.m_rows);
+    std::swap(m_columns, m.m_columns);
     return *this;
 }
 
