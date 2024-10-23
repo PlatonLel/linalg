@@ -2,7 +2,7 @@
 
 double eps = std::numeric_limits<double>::epsilon();
 
-linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> m)
+linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> m): m_columns{0}, m_rows{0}, m_ptr{nullptr}
 {
     //проверка на правильный ввод
     for (const auto& row : m) {
@@ -10,32 +10,37 @@ linalg::Matrix::Matrix(std::initializer_list<std::initializer_list<double>> m)
             throw Wrong_matrix_size(0);
         }
     }
-    m_rows = m.size();
-    m_columns = m.begin()->size();
-    m_ptr = new double[m_rows*m_columns];
-    size_t i=0;
-    for (const auto& row : m) {
-        for (double value : row) {
+    if (m.size()*m.begin()->size()) {
+        m_rows = m.size();
+        m_columns = m.begin()->size();
+        m_ptr = new double[m_rows * m_columns];
+        size_t i = 0;
+        for (const auto &row: m) {
+            for (double value: row) {
+                m_ptr[i] = value;
+                ++i;
+            }
+        }
+    }
+}
+
+linalg::Matrix::Matrix(std::initializer_list<double> m): m_columns{0} {
+    if(m.size()!=0) {
+        m_columns = 1;
+        m_rows = m.size();
+        m_ptr = new double[m_rows];
+        size_t i = 0;
+        for (double value: m) {
             m_ptr[i] = value;
             ++i;
         }
     }
 }
 
-linalg::Matrix::Matrix(std::initializer_list<double> m) {
-    m_columns = 1;
-    m_rows = m.size();
-    m_ptr = new double[m_rows];
-    size_t i=0;
-    for (double value : m) {
-        m_ptr[i] = value;
-        ++i;
-    }
-}
-
-linalg::Matrix::Matrix(const size_t& rows): m_rows{rows}, m_columns{1}, m_ptr{nullptr} {
+linalg::Matrix::Matrix(const size_t& rows): m_rows{rows}, m_columns{0}, m_ptr{nullptr} {
     if (rows != 0) {
         m_ptr = new double[rows];
+        m_columns = 1;
     }
     else {
         m_rows = 0;
