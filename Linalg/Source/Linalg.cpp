@@ -65,12 +65,16 @@ linalg::Matrix::Matrix(Matrix&& m) noexcept : m_rows{0}, m_columns{0}, m_ptr{nul
 }
 //копирующий
 linalg::Matrix::Matrix(const Matrix& m) {
-    m_ptr = new double[m.m_columns*m.m_rows];
-    for (size_t i = 0; i<(m.m_columns*m.m_rows); ++i) {
+    if (m.m_columns*m.m_rows==0) {
+        return;
+    }
+    m_ptr = new double[m.m_columns * m.m_rows];
+    for (size_t i = 0; i < (m.m_columns * m.m_rows); ++i) {
         m_ptr[i] = m.m_ptr[i];
     }
     m_columns = m.m_columns;
     m_rows = m.m_rows;
+
 }
 
 linalg::Matrix linalg::operator*(const Matrix& m1, const Matrix& m2) {
@@ -131,9 +135,6 @@ linalg::Matrix& linalg::Matrix::operator*=(const double& v) noexcept {
 }
 
 linalg::Matrix& linalg::Matrix::operator=(Matrix&& m) {
-    if (this == &m) {
-        return *this;
-    }
     std::swap(m_ptr, m.m_ptr);
     std::swap(m_rows, m.m_rows);
     std::swap(m_columns, m.m_columns);
@@ -231,15 +232,16 @@ std::ostream& linalg::operator<<(std::ostream& os, const Matrix& m) {
     }
     size_t max_width_first_column = 0;
     size_t max_width = 0;
+    std::ostringstream temp;
 //проходимся по элементам и вычисляем максимальную длину в 1 столбце и в остальных
     for (size_t i = 0; i < m.rows(); ++i) {
-        std::ostringstream temp_1;
-        temp_1 << m(i, 0);
-        max_width_first_column = std::max(max_width_first_column, temp_1.str().length());
+        temp << m(i, 0);
+        max_width_first_column = std::max(max_width_first_column, temp.str().length());
+        temp.str("");
         for (size_t j = 0; j < m.columns(); ++j) {
-            std::ostringstream temp_2;
-            temp_2 << m(i, j);
-            max_width = std::max(max_width, temp_2.str().length());
+            temp << m(i, j);
+            max_width = std::max(max_width, temp.str().length());
+            temp.str("");
         }
     }
 

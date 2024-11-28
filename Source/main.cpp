@@ -10,10 +10,10 @@ int main(int argc, char **argv) {
     std::cout << m3.empty() << m3.rows()<<m3.columns();
     std::cout << m2;
 
-//    // инициализация Google Test
-//    testing::InitGoogleTest(&argc, argv);
-//
-//    // запуск всех тестов
-//    return RUN_ALL_TESTS();
+    // инициализация Google Test
+    testing::InitGoogleTest(&argc, argv);
+
+    // запуск всех тестов
+    return RUN_ALL_TESTS();
 
 }
