@@ -1,6 +1,6 @@
 #pragma once
 #include <gtest/gtest.h>
-#include "linalg.hpp"
+#include "Linalg.hpp"
 
 
 // класс для тестирования, от которого будут наследовать остальные
