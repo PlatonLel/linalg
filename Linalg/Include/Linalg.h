@@ -23,11 +23,16 @@ namespace linalg {
         Matrix(const Matrix& v) { copy_constructor(v); }
         Matrix(Matrix&& v) noexcept;
 
-        Matrix(std::initializer_list<std::initializer_list<double>> m);
+        Matrix(std::initializer_list<std::initializer_list<T>> m);
 
-        Matrix(std::initializer_list<double> m);
+        Matrix(std::initializer_list<T> lst);
 
         ~Matrix() { delete[] m_ptr; }
+
+        const T* begin() const noexcept { return m_ptr; }
+        const T* end() const noexcept { return m_ptr + size; }
+        T* begin() noexcept { return m_ptr; }
+        T* end() noexcept { return m_ptr + size; }
 
         const size_t& rows() const noexcept { return m_rows; }
 
@@ -74,7 +79,7 @@ namespace linalg {
         double operator()(const size_t& m_row, const size_t& m_column) const;
     private:
         template<typename Y>
-        void copy_constructor(const Matrix<Y>& v);
+        void copy_constructor(const Matrix<Y>& m);
     private:
         size_t m_rows;
         size_t m_columns;
@@ -82,34 +87,34 @@ namespace linalg {
         T *m_ptr;
     };
 
-    std::ostream& operator<<(std::ostream& os, const Matrix& matrix);
-
-    Matrix operator*(const double& v, const Matrix& m);
-
-    Matrix operator*( const Matrix& m, const double& v);
-
-    Matrix operator*(const Matrix& m1, const Matrix& m2);
-
-    std::ostream& operator<<(std::ostream& os, const Matrix& m);
-
-    Matrix power(const Matrix& m,const int& p);
-
-    Matrix concatenate(const Matrix& m_left, const Matrix& m_right);
-
-    Matrix transpose(const Matrix& m);
-
-    Matrix invert(const Matrix& m);
-// ниже находятся 4 функции, которые вычисляют элементы матриц L и U соответственно в разложении матрицы, которая передается в invert
-//а также проихводят прямую подстановку единичного вектора и обратную подстановку вектора, который является результатом прямой
-//ф
-    double get_sum_L(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U);
-
-    double get_sum_U(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U);
-
-    Matrix forward_substitution(const Matrix& m_L, const Matrix& b);
-
-    Matrix backward_substitution(const Matrix& m_U, const Matrix& y);
-//класс исключений, от которого будут наследовать остальные
+//    std::ostream& operator<<(std::ostream& os, const Matrix& matrix);
+//
+//    Matrix operator*(const double& v, const Matrix& m);
+//
+//    Matrix operator*( const Matrix& m, const double& v);
+//
+//    Matrix operator*(const Matrix& m1, const Matrix& m2);
+//
+//    std::ostream& operator<<(std::ostream& os, const Matrix& m);
+//
+//    Matrix power(const Matrix& m,const int& p);
+//
+//    Matrix concatenate(const Matrix& m_left, const Matrix& m_right);
+//
+//    Matrix transpose(const Matrix& m);
+//
+//    Matrix invert(const Matrix& m);
+//// ниже находятся 4 функции, которые вычисляют элементы матриц L и U соответственно в разложении матрицы, которая передается в invert
+////а также проихводят прямую подстановку единичного вектора и обратную подстановку вектора, который является результатом прямой
+////ф
+//    double get_sum_L(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U);
+//
+//    double get_sum_U(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U);
+//
+//    Matrix forward_substitution(const Matrix& m_L, const Matrix& b);
+//
+//    Matrix backward_substitution(const Matrix& m_U, const Matrix& y);
+////класс исключений, от которого будут наследовать остальные
     class Matrix_exception {
     public:
         std::string what() {return description;}
