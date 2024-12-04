@@ -13,17 +13,17 @@ namespace linalg {
     template <typename T>
     class Matrix {
     public:
-        Matrix() noexcept : m_rows{0}, m_columns{0}, m_ptr{nullptr} {}
+        Matrix() noexcept {}
         Matrix(const size_t& rows);
         Matrix(const size_t& rows, const size_t& columns);
         template<typename Y>
         Matrix(const Matrix<Y>& m) { copy_constructor(m); }
-        Matrix(const Matrix& v) { copy_constructor(v); }
+        Matrix(const Matrix& m) { copy_constructor(m); }
         Matrix(Matrix&& m) noexcept { swap(m); }
 
         Matrix(std::initializer_list<std::initializer_list<T>> m);
 
-        Matrix(std::initializer_list<T> lst);
+        Matrix(std::initializer_list<T> m);
 
         ~Matrix() { delete[] m_ptr; }
 
@@ -37,7 +37,7 @@ namespace linalg {
 
         const size_t& columns() const noexcept { return m_columns; }
 
-        double *get_ptr() const noexcept { return m_ptr; }
+        double* get_ptr() const noexcept { return m_ptr; }
 
         void swap_rows(const size_t& row1,const size_t& row2) noexcept;
 
@@ -99,12 +99,12 @@ namespace linalg {
 
     template <typename T>
     void swap(Matrix<T>& m1, Matrix<T>& m2) { m1.swap(m2); }
-//
-//    Matrix operator*(const double& v, const Matrix& m);
-//
-//    Matrix operator*( const Matrix& m, const double& v);
-//
-//    Matrix operator*(const Matrix& m1, const Matrix& m2);
+    template <typename T>
+    Matrix<T> operator*(const T& v, const Matrix<T>& m);
+    template <typename T>
+    Matrix<T> operator*( const Matrix<T>& m, const T& v);
+    template <typename T>
+    Matrix<T> operator*(const Matrix<T>& m1, const Matrix<T>& m2);
 //
 //    std::ostream& operator<<(std::ostream& os, const Matrix& m);
 //

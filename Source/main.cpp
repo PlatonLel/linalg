@@ -2,8 +2,9 @@
 #include <Linalg.h>
 
 int main() {
-    linalg::Matrix<char> m(3);
-    linalg::Matrix m2 = {1,2,2};
-    m2 = linalg::Matrix<int> {1,2,3};
+    linalg::Matrix m = {{1,2},{1,2}};
+    linalg::Matrix m2 = {{1,3},{1,3}};
+    m2 *= 4;
+//    m2*=m;
     std::cout << m2;
 }

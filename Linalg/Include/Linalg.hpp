@@ -12,10 +12,12 @@ void linalg::Matrix<T>::copy_constructor(const Matrix<Y>& m)  {
         new(ptr) T( *ptr2 );
     }
     m_size = m.size();
+    m_columns = m.columns();
+    m_rows = m.rows();
 }
 
 template <typename T>
-linalg::Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> m): m_columns{0}, m_rows{0}, m_ptr{nullptr} {
+linalg::Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> m) {
     if (m.size() == 0) {
         return;
     }
@@ -69,6 +71,21 @@ linalg::Matrix<T>::Matrix(const size_t& rows) {
 }
 
 template <typename T>
+linalg::Matrix<T>::Matrix(const size_t& rows, const size_t& columns) {
+    if (rows == 0 || columns == 0) {
+        return;
+    }
+    m_ptr = reinterpret_cast<T*>(operator new(rows * columns * sizeof(T)));
+    for (T* ptr = m_ptr; ptr < m_ptr + rows;++ptr) {
+        new(ptr) T{};
+    }
+    m_rows = rows;
+    m_columns = columns;
+    m_size = rows*columns;
+    m_capacity = m_size;
+}
+
+template <typename T>
 template <typename Y>
 linalg::Matrix<T>& linalg::Matrix<T>::operator+=(const Matrix<Y>& m){
     if (m_columns!=m.columns() || m_rows!=m.rows()) {
@@ -79,93 +96,63 @@ linalg::Matrix<T>& linalg::Matrix<T>::operator+=(const Matrix<Y>& m){
     };
     return *this;
 }
-//
-//linalg::Matrix::Matrix(const size_t& rows, const size_t& columns): m_rows{rows}, m_columns{columns}, m_ptr{nullptr} {
-//    if (rows*columns != 0) {
-//        m_ptr = new double[rows*columns];
-//    }
-//    else {
-//        m_rows = 0;
-//        m_columns=0;
-//    }
-//}
-//
-////перемещающий конструктор
-//linalg::Matrix::Matrix(Matrix&& m) noexcept : m_rows{0}, m_columns{0}, m_ptr{nullptr} {
-//    std::swap(m_ptr, m.m_ptr);
-//    std::swap(m_rows, m.m_rows);
-//    std::swap(m_columns, m.m_columns);
-//}
-////копирующий
-//linalg::Matrix::Matrix(const Matrix& m) {
-//    if (m.m_columns*m.m_rows==0) {
-//        return;
-//    }
-//    m_ptr = new double[m.m_columns * m.m_rows];
-//    for (size_t i = 0; i < (m.m_columns * m.m_rows); ++i) {
-//        m_ptr[i] = m.m_ptr[i];
-//    }
-//    m_columns = m.m_columns;
-//    m_rows = m.m_rows;
-//
-//}
-//
-//linalg::Matrix linalg::operator*(const Matrix& m1, const Matrix& m2) {
-//    if (m1.columns() != m2.rows()) {
-//        throw Wrong_matrix_size(1);
-//    }
-//
-//    Matrix m_return(m1);
-//    m_return*=m2;
-//
-//    return m_return;
-//}
-//
-//linalg::Matrix& linalg::Matrix::operator*=(const Matrix& m) {
-//    if (m_columns != m.m_rows) {
-//        throw Wrong_matrix_size(2);
-//    }
-//    Matrix m_return(m_rows, m.m_columns);
-//    for (size_t i = 0; i < m_rows; ++i) {
-//        for (size_t j = 0; j < m.m_columns; ++j) {
-//            m_return.m_ptr[i * m.m_columns + j] = 0;
-//            for (size_t k = 0; k < m_columns; ++k) {
-//                m_return.m_ptr[i * m.m_columns + j] += m_ptr[i * m_columns + k] * m.m_ptr[k * m.m_columns + j];
-//            }
-//        }
-//    }
-//    for (size_t i=0; i<m_return.m_columns*m_return.m_rows; ++i) {
-//        if(std::abs(m_return.m_ptr[i])<eps*1000) {
-//            m_return.m_ptr[i]=0;
-//        }
-//    }
-//    *this = std::move(m_return);
-//    return *this;
-//}
-//
-//linalg::Matrix linalg::operator*(const Matrix& m, const double& v) {
-//    Matrix m_return(m);
-//    m_return*=v;
-//    return m_return;
-//}
-//
-//linalg::Matrix linalg::operator*(const double& v, const Matrix& m) {
-//    Matrix m_return(m);
-//    m_return*=v;
-//    return m_return;
-//}
-//
-//linalg::Matrix& linalg::Matrix::operator*=(const double& v) noexcept {
-//    for (size_t i=0; i<m_columns*m_rows; ++i) {
-//        m_ptr[i] *= v;
-//    }
-//    for (size_t i=0; i<m_columns*m_rows; ++i) {
-//        if(std::abs(m_ptr[i])<eps*1000) {
-//            m_ptr[i]=0;
-//        }
-//    }
-//    return *this;
-//}
+
+template <typename T>
+linalg::Matrix<T> linalg::operator*(const Matrix<T>& m1, const Matrix<T>& m2) {
+    if (m1.columns() != m2.rows()) {
+        throw Wrong_matrix_size(1);
+    }
+    Matrix m_return(m1);
+    m_return*=m2;
+
+    return m_return;
+}
+template <typename T>
+linalg::Matrix<T>& linalg::Matrix<T>::operator*=(const Matrix<T>& m) {
+    if (m_columns != m.m_rows) {
+        throw Wrong_matrix_size(2);
+    }
+    Matrix m_return(m_rows, m.m_columns);
+    for (size_t i = 0; i < m_rows; ++i) {
+        for (size_t j = 0; j < m.m_columns; ++j) {
+            m_return.m_ptr[i * m.m_columns + j] = 0;
+            for (size_t k = 0; k < m_columns; ++k) {
+                m_return.m_ptr[i * m.m_columns + j] += m_ptr[i * m_columns + k] * m.m_ptr[k * m.m_columns + j];
+            }
+        }
+    }
+    for (size_t i=0; i<m_return.m_columns*m_return.m_rows; ++i) {
+        if(std::abs(m_return.m_ptr[i])<eps*1000) {
+            m_return.m_ptr[i]=0;
+        }
+    }
+    *this = std::move(m_return);
+    return *this;
+}
+template <typename T>
+linalg::Matrix<T> linalg::operator*(const Matrix<T>& m, const double& v) {
+    Matrix m_return(m);
+    m_return*=v;
+    return m_return;
+}
+template <typename T>
+linalg::Matrix<T> linalg::operator*(const double& v, const Matrix<T>& m) {
+    Matrix m_return(m);
+    m_return*=v;
+    return m_return;
+}
+template <typename T>
+linalg::Matrix<T>& linalg::Matrix<T>::operator*=(const double& v) noexcept {
+    for (size_t i=0; i<m_columns*m_rows; ++i) {
+        m_ptr[i] *= v;
+    }
+    for (size_t i=0; i<m_columns*m_rows; ++i) {
+        if(std::abs(m_ptr[i])<eps*1000) {
+            m_ptr[i]=0;
+        }
+    }
+    return *this;
+}
 //
 template <typename T>
 void linalg::Matrix<T>::swap(Matrix& m) noexcept {
@@ -206,61 +193,65 @@ linalg::Matrix<T>& linalg::Matrix<T>::operator=(const Matrix<Y>& m) {
     m_size=m.size();
     return *this;
 }
-//
-//linalg::Matrix linalg::Matrix::operator+(const Matrix& m) const {
-//    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
-//        throw Wrong_matrix_size(3);
-//    }
-//    Matrix m_return(*this);
-//    m_return+=m;
-//    return m_return;
-//}
-//
-//linalg::Matrix& linalg::Matrix::operator+=(const Matrix& m) {
-//    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
-//        throw Wrong_matrix_size(4);
-//    }
-//    for (size_t i=0; i<(m_rows*m_columns); ++i) {
-//        m_ptr[i] += m.m_ptr[i];
-//    }
-//    return *this;
-//}
-//
-//linalg::Matrix linalg::Matrix::operator-(const Matrix& m) const {
-//    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
-//        throw Wrong_matrix_size(5);
-//    }
-//    Matrix m_return(*this);
-//    m_return-=m;
-//    return m_return;
-//}
-//
-//linalg::Matrix& linalg::Matrix::operator-=(const Matrix& m) {
-//    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
-//        throw Wrong_matrix_size(6);
-//    }
-//    for (size_t i=0; i<(m_rows*m_columns); ++i) {
-//        m_ptr[i] -= m.m_ptr[i];
-//    }
-//    return *this;
-//}
-//
-//bool linalg::Matrix::operator==(const Matrix& m) const {
-//    if (this == &m) {return true;}
-//    if (m_columns!=m.m_columns||m_rows!=m.m_rows) {return false;}
-//    for (size_t i=0; i<m_rows*m_columns; ++i) {
-//        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps*1000) {return false;}
-//    }
-//    return true;
-//}
-//
-//bool linalg::Matrix::operator!=(const Matrix& m) const {
-//    if (m_columns!=m.m_columns||m_rows!=m.m_rows) { return true;}
-//    for (size_t i=0; i<m_rows*m_columns; ++i) {
-//        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps*1000) { return true;}
-//    }
-//    return false;
-//}
+template <typename T>
+linalg::Matrix<T> linalg::Matrix<T>::operator+(const Matrix<T>& m) const {
+    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
+        throw Wrong_matrix_size(3);
+    }
+    Matrix m_return(*this);
+    m_return+=m;
+    return m_return;
+}
+template <typename T>
+linalg::Matrix<T>& linalg::Matrix<T>::operator+=(const Matrix<T>& m) {
+    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
+        throw Wrong_matrix_size(4);
+    }
+    for (size_t i=0; i<(m_rows*m_columns); ++i) {
+        m_ptr[i] += m.m_ptr[i];
+    }
+    return *this;
+}
+
+template <typename T>
+linalg::Matrix<T> linalg::Matrix<T>::operator-(const Matrix<T>& m) const {
+    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
+        throw Wrong_matrix_size(5);
+    }
+    Matrix m_return(*this);
+    m_return-=m;
+    return m_return;
+}
+
+template <typename T>
+linalg::Matrix<T>& linalg::Matrix<T>::operator-=(const Matrix<T>& m) {
+    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
+        throw Wrong_matrix_size(6);
+    }
+    for (size_t i=0; i<(m_rows*m_columns); ++i) {
+        m_ptr[i] -= m.m_ptr[i];
+    }
+    return *this;
+}
+
+template <typename T>
+bool linalg::Matrix<T>::operator==(const Matrix<T>& m) const {
+    if (this == &m) {return true;}
+    if (m_columns!=m.m_columns||m_rows!=m.m_rows) {return false;}
+    for (size_t i=0; i<m_rows*m_columns; ++i) {
+        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps*1000) {return false;}
+    }
+    return true;
+}
+
+template <typename T>
+bool linalg::Matrix<T>::operator!=(const Matrix<T>& m) const {
+    if (m_columns!=m.m_columns||m_rows!=m.m_rows) { return true;}
+    for (size_t i=0; i<m_rows*m_columns; ++i) {
+        if (std::abs(m_ptr[i]-m.m_ptr[i]) >= eps*1000) { return true;}
+    }
+    return false;
+}
 //
 template <typename T>
 double& linalg::Matrix<T>::operator()(const size_t& m_row, const size_t& m_column) {
