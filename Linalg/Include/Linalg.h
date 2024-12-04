@@ -17,9 +17,9 @@ namespace linalg {
         Matrix(const size_t& rows);
         Matrix(const size_t& rows, const size_t& columns);
         template<typename Y>
-        Matrix(const Matrix<Y>& v) { copy_constructor(v); }
+        Matrix(const Matrix<Y>& m) { copy_constructor(m); }
         Matrix(const Matrix& v) { copy_constructor(v); }
-        Matrix(Matrix&& v) noexcept;
+        Matrix(Matrix&& m) noexcept { swap(m); }
 
         Matrix(std::initializer_list<std::initializer_list<T>> m);
 
@@ -32,6 +32,7 @@ namespace linalg {
         T* begin() noexcept { return m_ptr; }
         T* end() noexcept { return m_ptr + m_size; }
         size_t size() const noexcept { return m_size; }
+        size_t capacity() const noexcept { return m_capacity; }
         const size_t& rows() const noexcept { return m_rows; }
 
         const size_t& columns() const noexcept { return m_columns; }
@@ -39,6 +40,8 @@ namespace linalg {
         double *get_ptr() const noexcept { return m_ptr; }
 
         void swap_rows(const size_t& row1,const size_t& row2) noexcept;
+
+        void swap(Matrix& m) noexcept;
 
         bool empty() const noexcept { return ((m_ptr == nullptr)||(m_columns==0 && m_rows==0)); }
 
@@ -51,10 +54,11 @@ namespace linalg {
         double det() const;
 //метод гаусс возвращает количество раз, когда строки менялись местами, он нужен для det(), но можно вызвать для любой матрицы
         size_t gauss() noexcept;
+        template <typename Y>
+        Matrix &operator=(Matrix<Y>&& m) noexcept;
 
-        Matrix &operator=(Matrix& m);
-
-        Matrix &operator=(Matrix&& m);
+        template <typename Y>
+        Matrix &operator=(const Matrix<Y>& m);
 
         Matrix operator+(const Matrix& m) const;
 
@@ -92,6 +96,9 @@ namespace linalg {
     };
     template <typename T>
     std::ostream& operator<<(std::ostream& os, const Matrix<T>& matrix);
+
+    template <typename T>
+    void swap(Matrix<T>& m1, Matrix<T>& m2) { m1.swap(m2); }
 //
 //    Matrix operator*(const double& v, const Matrix& m);
 //

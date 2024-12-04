@@ -167,28 +167,45 @@ linalg::Matrix<T>& linalg::Matrix<T>::operator+=(const Matrix<Y>& m){
 //    return *this;
 //}
 //
-//linalg::Matrix& linalg::Matrix::operator=(Matrix&& m) {
-//    std::swap(m_ptr, m.m_ptr);
-//    std::swap(m_rows, m.m_rows);
-//    std::swap(m_columns, m.m_columns);
-//    return *this;
-//}
-//
-//linalg::Matrix& linalg::Matrix::operator=(Matrix& m) {
-//    if (this == &m) {
-//        return *this;
-//    }
-//    if (m_columns*m_rows != m.m_columns * m.m_rows) {
-//        delete[] m_ptr;
-//        m_ptr = new double[m.m_rows*m.m_columns];
-//    }
-//    for (size_t i = 0; i < (m.m_columns*m.m_rows); ++i) {
-//        m_ptr[i] = m.m_ptr[i];
-//    }
-//    m_rows = m.m_rows;
-//    m_columns = m.m_columns;
-//    return *this;
-//}
+template <typename T>
+void linalg::Matrix<T>::swap(Matrix& m) noexcept {
+    std::swap(m_size, m.m_size);
+    std::swap(m_ptr, m.m_ptr);
+    std::swap(m_capacity, m.m_capacity);
+    std::swap(m_columns, m.m_columns);
+    std::swap(m_rows, m.m_rows);
+}
+
+template <typename T>
+template <typename Y>
+linalg::Matrix<T>& linalg::Matrix<T>::operator=(Matrix<Y>&& m) noexcept {
+    swap(m);
+    return *this;
+}
+
+template <typename T>
+template <typename Y>
+linalg::Matrix<T>& linalg::Matrix<T>::operator=(const Matrix<Y>& m) {
+    if (m_capacity < m.size())
+        return *this = Matrix{m};
+    size_t i = 0;
+    for ( ;i < std::min(m_size,m.size()); ++i)
+        m_ptr[i] = m[i];
+    if (m_size < m.size()){
+        for (;i<m.size();++i){
+            new(m_ptr+i) T(m[i]);
+        }
+    }
+    else{
+        for (;i<m_size;++i){
+            m_ptr[i].~T();
+        }
+    }
+    m_rows=m.rows();
+    m_columns=m.columns();
+    m_size=m.size();
+    return *this;
+}
 //
 //linalg::Matrix linalg::Matrix::operator+(const Matrix& m) const {
 //    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
