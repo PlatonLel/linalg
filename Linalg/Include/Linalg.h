@@ -14,10 +14,8 @@ namespace linalg {
     class Matrix {
     public:
         Matrix() noexcept : m_rows{0}, m_columns{0}, m_ptr{nullptr} {}
-
         Matrix(const size_t& rows);
         Matrix(const size_t& rows, const size_t& columns);
-
         template<typename Y>
         Matrix(const Matrix<Y>& v) { copy_constructor(v); }
         Matrix(const Matrix& v) { copy_constructor(v); }
@@ -61,6 +59,8 @@ namespace linalg {
         Matrix operator+(const Matrix& m) const;
 
         Matrix &operator+=(const Matrix& m) ;
+        template <typename Y>
+        Matrix &operator+=(const Matrix<Y>& m) ;
 
         Matrix operator-(const Matrix& m) const;
 
@@ -77,6 +77,9 @@ namespace linalg {
         double &operator()(const size_t& m_row, const size_t& m_column);
 
         double operator()(const size_t& m_row, const size_t& m_column) const;
+
+        const T& operator[](size_t i) const noexcept { return m_ptr[i]; }
+        T& operator[](size_t i) noexcept { return m_ptr[i]; }
     private:
         template<typename Y>
         void copy_constructor(const Matrix<Y>& m);
@@ -84,6 +87,7 @@ namespace linalg {
         size_t m_rows = 0;
         size_t m_columns = 0;
         size_t m_size = 0;
+        size_t m_capacity = 0;
         T* m_ptr = nullptr;
     };
     template <typename T>

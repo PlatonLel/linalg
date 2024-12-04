@@ -55,15 +55,29 @@ linalg::Matrix<T>::Matrix(std::initializer_list<T> m)
 }
 template <typename T>
 linalg::Matrix<T>::Matrix(const size_t& rows) {
-    if (rows != 0) {
-        m_ptr = new double[rows];
-        m_columns = 1;
-        m_rows = rows;
-        m_size = m_rows;
-    }
-    else {
+    if (rows == 0) {
         return;
     }
+    m_ptr = reinterpret_cast<T*>(operator new(rows * sizeof(T)));
+    for (T* ptr = m_ptr; ptr < m_ptr + rows;++ptr) {
+        new(ptr) T{};
+    }
+    m_rows = rows;
+    m_columns = 1;
+    m_size = rows;
+    m_capacity = rows;
+}
+
+template <typename T>
+template <typename Y>
+linalg::Matrix<T>& linalg::Matrix<T>::operator+=(const Matrix<Y>& m){
+    if (m_columns!=m.columns() || m_rows!=m.rows()) {
+        throw Wrong_matrix_size(3);
+    }
+    for (size_t i=0;i<m_size;++i){
+        m_ptr[i]+=m[i];
+    };
+    return *this;
 }
 //
 //linalg::Matrix::Matrix(const size_t& rows, const size_t& columns): m_rows{rows}, m_columns{columns}, m_ptr{nullptr} {

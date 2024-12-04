@@ -2,7 +2,7 @@
 #include <Linalg.h>
 
 int main() {
-    linalg::Matrix m = {{1,2},{1,2}};
-    linalg::Matrix m2 = {1,2,2,1,2};
-    std::cout << m;
+    linalg::Matrix<char> m(3);
+    linalg::Matrix m2 = {1,2,2};
+    std::cout << (m+=m2);
 }
