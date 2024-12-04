@@ -30,10 +30,10 @@ namespace linalg {
         ~Matrix() { delete[] m_ptr; }
 
         const T* begin() const noexcept { return m_ptr; }
-        const T* end() const noexcept { return m_ptr + size; }
+        const T* end() const noexcept { return m_ptr + m_size; }
         T* begin() noexcept { return m_ptr; }
-        T* end() noexcept { return m_ptr + size; }
-
+        T* end() noexcept { return m_ptr + m_size; }
+        size_t size() const noexcept { return m_size; }
         const size_t& rows() const noexcept { return m_rows; }
 
         const size_t& columns() const noexcept { return m_columns; }
@@ -81,13 +81,13 @@ namespace linalg {
         template<typename Y>
         void copy_constructor(const Matrix<Y>& m);
     private:
-        size_t m_rows;
-        size_t m_columns;
-        size_t size = m_columns*m_rows;
-        T *m_ptr;
+        size_t m_rows = 0;
+        size_t m_columns = 0;
+        size_t m_size = 0;
+        T* m_ptr = nullptr;
     };
-
-//    std::ostream& operator<<(std::ostream& os, const Matrix& matrix);
+    template <typename T>
+    std::ostream& operator<<(std::ostream& os, const Matrix<T>& matrix);
 //
 //    Matrix operator*(const double& v, const Matrix& m);
 //

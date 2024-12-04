@@ -3,6 +3,6 @@
 
 int main() {
     linalg::Matrix m = {{1,2},{1,2}};
-    linalg::Matrix m2 = {{1,2},{1,2},{1,2}};
-    linalg::Matrix m3 = m2;
+    linalg::Matrix m2 = {1,2,2,1,2};
+    std::cout << m;
 }

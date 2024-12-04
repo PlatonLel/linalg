@@ -11,49 +11,60 @@ void linalg::Matrix<T>::copy_constructor(const Matrix<Y>& m)  {
     for (const Y* ptr2 = m.begin(); ptr2 != m.end(); ++ptr2, ++ptr) {
         new(ptr) T( *ptr2 );
     }
-    size = m.size();
+    m_size = m.size();
 }
 
 template <typename T>
 linalg::Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> m): m_columns{0}, m_rows{0}, m_ptr{nullptr} {
-    //проверка на правильный ввод
-    for (const auto &row: m) {
-        if (row.size() != m.begin()->size()) {
-            throw Wrong_matrix_size(0);
-        }
+    if (m.size() == 0) {
+        return;
     }
     m_ptr = reinterpret_cast<T *>(operator new(m.size() * sizeof(T)));
     T *ptr = m_ptr;
     for (const auto &row: m) {
-        for (T &el: row) {
+        if (row.size() != m.begin()->size()) {
+            throw Wrong_matrix_size(0);
+        }
+        else if (row.size() == 0) {
+            return;
+        }
+        for (const T &el: row) {
             new(ptr) T(el);
             ++ptr;
         }
-        size = m.size();
     }
-
-    template<typename T>
-    linalg::Matrix::Matrix(std::initializer_list<T>m)
-    {
-
-        m_ptr = reinterpret_cast<T *>(operator new(m.size() * sizeof(T)));
-        T *ptr = m_ptr;
-        for (const T &el: m) {
-            new(ptr) T(el);
-            ++ptr;
-        }
-        size = m.size();
+    m_columns = m.begin()->size();
+    m_rows = m.size();
+    m_size = m_columns*m_rows;
+}
+template <typename T>
+linalg::Matrix<T>::Matrix(std::initializer_list<T> m)
+{
+    if (m.size() == 0) {
+        return;
+    }
+    m_ptr = reinterpret_cast<T*>(operator new(m.size() * sizeof(T)));
+    T* ptr = m_ptr;
+    for (const T &el: m) {
+        new(ptr) T(el);
+        ++ptr;
+    }
+    m_columns = 1;
+    m_rows = m.size();
+    m_size = m_columns*m_rows;
+}
+template <typename T>
+linalg::Matrix<T>::Matrix(const size_t& rows) {
+    if (rows != 0) {
+        m_ptr = new double[rows];
+        m_columns = 1;
+        m_rows = rows;
+        m_size = m_rows;
+    }
+    else {
+        return;
     }
 }
-//linalg::Matrix::Matrix(const size_t& rows): m_rows{rows}, m_columns{0}, m_ptr{nullptr} {
-//    if (rows != 0) {
-//        m_ptr = new double[rows];
-//        m_columns = 1;
-//    }
-//    else {
-//        m_rows = 0;
-//    }
-//}
 //
 //linalg::Matrix::Matrix(const size_t& rows, const size_t& columns): m_rows{rows}, m_columns{columns}, m_ptr{nullptr} {
 //    if (rows*columns != 0) {
@@ -220,56 +231,58 @@ linalg::Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> m): m_
 //    return false;
 //}
 //
-//double& linalg::Matrix::operator()(const size_t& m_row, const size_t& m_column) {
-//    if (m_row >= m_rows || m_column >= m_columns) {
-//        throw Wrong_matrix_size(7);
-//    }
-//    return m_ptr[m_row * m_columns + m_column];
-//}
+template <typename T>
+double& linalg::Matrix<T>::operator()(const size_t& m_row, const size_t& m_column) {
+    if (m_row >= m_rows || m_column >= m_columns) {
+        throw Wrong_matrix_size(7);
+    }
+    return m_ptr[m_row * m_columns + m_column];
+}
+template <typename T>
+double linalg::Matrix<T>::operator()(const size_t& m_row, const size_t& m_column) const {
+    if (m_row >= m_rows || m_column >= m_columns) {
+        throw Wrong_matrix_size(7);
+    }
+    return m_ptr[m_row * m_columns + m_column];
+}
 //
-//double linalg::Matrix::operator()(const size_t& m_row, const size_t& m_column) const {
-//    if (m_row >= m_rows || m_column >= m_columns) {
-//        throw Wrong_matrix_size(7);
-//    }
-//    return m_ptr[m_row * m_columns + m_column];
-//}
-//
-//std::ostream& linalg::operator<<(std::ostream& os, const Matrix& m) {
-//    if (m.empty()) {
-//        throw Empty_matrix(6);
-//    }
-//    size_t max_width_first_column = 0;
-//    size_t max_width = 0;
-//    std::ostringstream temp;
-////проходимся по элементам и вычисляем максимальную длину в 1 столбце и в остальных
-//    for (size_t i = 0; i < m.rows(); ++i) {
-//        temp << m(i, 0);
-//        max_width_first_column = std::max(max_width_first_column, temp.str().length());
-//        temp.str("");
-//        for (size_t j = 0; j < m.columns(); ++j) {
-//            temp << m(i, j);
-//            max_width = std::max(max_width, temp.str().length());
-//            temp.str("");
-//        }
-//    }
-//
-//    for (size_t i = 0; i < m.rows(); ++i) {
-//        os << "|";
-//        for (size_t j = 0; j < m.columns(); ++j) {
-//            if (j==m.columns()-1) {
-//                os << std::setw(max_width) << m(i, j);
-//            }
-//            else if (j==0) {
-//                os << std::setw(max_width_first_column) << m(i, j) << " ";
-//            }
-//            else {
-//                os << std::setw(max_width) << m(i, j) << " ";
-//            }
-//        }
-//        os << "|\n";
-//    }
-//    return os;
-//}
+template <typename T>
+std::ostream& linalg::operator<<(std::ostream& os, const Matrix<T>& m) {
+    if (m.empty()) {
+        throw Empty_matrix(6);
+    }
+    size_t max_width_first_column = 0;
+    size_t max_width = 0;
+    std::ostringstream temp;
+//проходимся по элементам и вычисляем максимальную длину в 1 столбце и в остальных
+    for (size_t i = 0; i < m.rows(); ++i) {
+        temp << m(i, 0);
+        max_width_first_column = std::max(max_width_first_column, temp.str().length());
+        temp.str("");
+        for (size_t j = 0; j < m.columns(); ++j) {
+            temp << m(i, j);
+            max_width = std::max(max_width, temp.str().length());
+            temp.str("");
+        }
+    }
+
+    for (size_t i = 0; i < m.rows(); ++i) {
+        os << "|";
+        for (size_t j = 0; j < m.columns(); ++j) {
+            if (j==m.columns()-1) {
+                os << std::setw(max_width) << m(i, j);
+            }
+            else if (j==0) {
+                os << std::setw(max_width_first_column) << m(i, j) << " ";
+            }
+            else {
+                os << std::setw(max_width) << m(i, j) << " ";
+            }
+        }
+        os << "|\n";
+    }
+    return os;
+}
 ////убрать пробел в конце
 //double linalg::Matrix::norm() const {
 //    if (empty()) {
@@ -590,106 +603,106 @@ linalg::Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> m): m_
 //    return y;
 //}
 //
-//linalg::Wrong_matrix_size::Wrong_matrix_size(size_t p) {
-//    switch (p) {
-//        case 0: {
-//            description = "Wrong initializer_list in constructor of Matrix";
-//            break;
-//        }
-//        case 1: {
-//            description = "Wrong matrix sizes for multiplication";
-//            break;
-//        }
-//        case 2: {
-//            description = "Wrong matrix sizes for multiplication and assignment";
-//            break;
-//        }
-//        case 3: {
-//            description = "Wrong matrix sizes for addition";
-//            break;
-//        }
-//        case 4: {
-//            description = "Wrong matrix sizes for addition and assignment";
-//            break;
-//        }
-//        case 5: {
-//            description = "Wrong matrix sizes for subtraction";
-//            break;
-//        }
-//        case 6: {
-//            description = "Wrong matrix sizes for subtraction and assignment";
-//            break;
-//        }
-//        case 7: {
-//            description = "Wrong matrix size index access";
-//            break;
-//        }
-//        case 8: {
-//            description = "Wrong matrix sizes for reshape";
-//            break;
-//        }
-//        case 9: {
-//            description = "Not square matrix for determinant";
-//            break;
-//        }
-//        case 10: {
-//            description = "Not square matrix for trace";
-//            break;
-//        }
-//        case 11: {
-//            description = "Not square matrix for power";
-//            break;
-//        }
-//        case 12: {
-//            description = "Wrong number of rows in right matrix for concatenate";
-//            break;
-//        }
-//        case 13: {
-//            description = "Not square matrix for invert";
-//            break;
-//        }
-//    }
-//}
-//
-//linalg::Empty_matrix::Empty_matrix(size_t p) {
-//    switch (p) {
-//        case 0: {
-//            description = "Empty matrix in norm";
-//            break;
-//        }
-//        case 1: {
-//            description = "Empty matrix in det";
-//            break;
-//        }
-//        case 2: {
-//            description = "Empty matrix in trace";
-//            break;
-//        }
-//        case 3: {
-//            description = "Empty matrix in power";
-//            break;
-//        }
-//        case 4: {
-//            description = "Empty matrix in concatenate";
-//            break;
-//        }
-//        case 5: {
-//            description = "Empty matrix in transpose";
-//            break;
-//        }
-//        case 6: {
-//            description = "Empty matrix in cout";
-//            break;
-//        }
-//    }
-//}
-//
-//linalg::Singular_matrix::Singular_matrix(size_t p) {
-//    switch (p) {
-//        case 0: {
-//            description = "Singular matrix in invert";
-//            break;
-//        }
-//    }
-//}
+linalg::Wrong_matrix_size::Wrong_matrix_size(size_t p) {
+    switch (p) {
+        case 0: {
+            description = "Wrong initializer_list in constructor of Matrix";
+            break;
+        }
+        case 1: {
+            description = "Wrong matrix sizes for multiplication";
+            break;
+        }
+        case 2: {
+            description = "Wrong matrix sizes for multiplication and assignment";
+            break;
+        }
+        case 3: {
+            description = "Wrong matrix sizes for addition";
+            break;
+        }
+        case 4: {
+            description = "Wrong matrix sizes for addition and assignment";
+            break;
+        }
+        case 5: {
+            description = "Wrong matrix sizes for subtraction";
+            break;
+        }
+        case 6: {
+            description = "Wrong matrix sizes for subtraction and assignment";
+            break;
+        }
+        case 7: {
+            description = "Wrong matrix size index access";
+            break;
+        }
+        case 8: {
+            description = "Wrong matrix sizes for reshape";
+            break;
+        }
+        case 9: {
+            description = "Not square matrix for determinant";
+            break;
+        }
+        case 10: {
+            description = "Not square matrix for trace";
+            break;
+        }
+        case 11: {
+            description = "Not square matrix for power";
+            break;
+        }
+        case 12: {
+            description = "Wrong number of rows in right matrix for concatenate";
+            break;
+        }
+        case 13: {
+            description = "Not square matrix for invert";
+            break;
+        }
+    }
+}
+
+linalg::Empty_matrix::Empty_matrix(size_t p) {
+    switch (p) {
+        case 0: {
+            description = "Empty matrix in norm";
+            break;
+        }
+        case 1: {
+            description = "Empty matrix in det";
+            break;
+        }
+        case 2: {
+            description = "Empty matrix in trace";
+            break;
+        }
+        case 3: {
+            description = "Empty matrix in power";
+            break;
+        }
+        case 4: {
+            description = "Empty matrix in concatenate";
+            break;
+        }
+        case 5: {
+            description = "Empty matrix in transpose";
+            break;
+        }
+        case 6: {
+            description = "Empty matrix in cout";
+            break;
+        }
+    }
+}
+
+linalg::Singular_matrix::Singular_matrix(size_t p) {
+    switch (p) {
+        case 0: {
+            description = "Singular matrix in invert";
+            break;
+        }
+    }
+}
 //
