@@ -25,7 +25,7 @@ namespace linalg {
 
         Matrix(std::initializer_list<T> m);
 
-        ~Matrix() { delete[] m_ptr; }
+        ~Matrix() noexcept;
 
         const T* begin() const noexcept { return m_ptr; }
         const T* end() const noexcept { return m_ptr + m_size; }
@@ -105,26 +105,35 @@ namespace linalg {
     Matrix<T> operator*( const Matrix<T>& m, const T& v);
     template <typename T>
     Matrix<T> operator*(const Matrix<T>& m1, const Matrix<T>& m2);
-//
-//    std::ostream& operator<<(std::ostream& os, const Matrix& m);
-//
-//    Matrix power(const Matrix& m,const int& p);
-//
-//    Matrix concatenate(const Matrix& m_left, const Matrix& m_right);
-//
-//    Matrix transpose(const Matrix& m);
-//
-//    Matrix invert(const Matrix& m);
+
+    template <typename T>
+    std::ostream& operator<<(std::ostream& os, const Matrix<T>& m);
+
+    template <typename T>
+    Matrix<T> power(const Matrix<T>& m,const int& p);
+
+    template <typename T>
+    Matrix<T> concatenate(const Matrix<T>& m_left, const Matrix<T>& m_right);
+
+    template <typename T>
+    Matrix<T> transpose(const Matrix<T>& m);
+
+    template <typename T>
+    Matrix<T> invert(const Matrix<T>& m);
 //// ниже находятся 4 функции, которые вычисляют элементы матриц L и U соответственно в разложении матрицы, которая передается в invert
 ////а также проихводят прямую подстановку единичного вектора и обратную подстановку вектора, который является результатом прямой
 ////ф
-//    double get_sum_L(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U);
-//
-//    double get_sum_U(size_t& m_row, size_t& m_column, Matrix& m_L, Matrix& m_U);
-//
-//    Matrix forward_substitution(const Matrix& m_L, const Matrix& b);
-//
-//    Matrix backward_substitution(const Matrix& m_U, const Matrix& y);
+    template <typename T>
+    double get_sum_L(size_t& m_row, size_t& m_column, Matrix<T>& m_L, Matrix<T>& m_U);
+
+    template <typename T>
+    double get_sum_U(size_t& m_row, size_t& m_column, Matrix<T>& m_L, Matrix<T>& m_U);
+
+    template <typename T>
+    Matrix<T> forward_substitution(const Matrix<T>& m_L, const Matrix<T>& b);
+
+    template <typename T>
+    Matrix<T> backward_substitution(const Matrix<T>& m_U, const Matrix<T>& y);
 ////класс исключений, от которого будут наследовать остальные
     class Matrix_exception {
     public:
