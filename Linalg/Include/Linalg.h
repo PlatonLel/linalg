@@ -96,6 +96,12 @@ namespace linalg {
 
         const T& operator[](size_t i) const noexcept { return m_ptr[i]; }
         T& operator[](size_t i) noexcept { return m_ptr[i]; }
+
+        void shrink_to_fit();
+
+        void clear() noexcept;
+
+        void reserve(size_t n);
     private:
         template<typename Y>
         void copy_constructor(const Matrix<Y>& m);

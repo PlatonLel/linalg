@@ -817,4 +817,26 @@ linalg::Matrix<T>::~Matrix() noexcept {
     }
     operator delete(reinterpret_cast<void*>(m_ptr));
 }
-//
+
+template <typename T>
+void linalg::Matrix<T>::shrink_to_fit(){
+    if (m_size == m_capacity) {
+        return;
+    }
+    *this = Matrix{*this};
+}
+
+template <typename T>
+void linalg::Matrix<T>::clear() noexcept {
+    for (T* ptr = m_ptr; ptr < m_ptr + m_size; ++ptr) {
+        ptr->~T();
+    }
+    m_size = 0;
+}
+
+template <typename T>
+void linalg::Matrix<T>::reserve(size_t n) {
+    this->clear();
+    m_ptr = reinterpret_cast<T*>(operator new(n * sizeof(T)));
+    m_capacity = n;
+}
