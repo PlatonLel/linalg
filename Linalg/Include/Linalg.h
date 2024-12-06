@@ -80,9 +80,15 @@ namespace linalg {
         template <typename Y>
         Matrix &operator*=(const Y& v) noexcept;
 
-        bool operator==(const Matrix& m) const;
+        template <typename Y>
+        bool operator==(const Matrix<Y>& m) const;
 
-        bool operator!=(const Matrix& m) const;
+        bool operator==(const Matrix<double>& m) const;
+
+        bool operator!=(const Matrix<double>& m) const;
+
+        template <typename Y>
+        bool operator!=(const Matrix<Y>& m) const;
 
         double &operator()(const size_t& m_row, const size_t& m_column);
 

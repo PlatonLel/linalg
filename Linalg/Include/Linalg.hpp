@@ -275,24 +275,49 @@ linalg::Matrix<T>& linalg::Matrix<T>::operator-=(const Matrix<Y>& m) {
 }
 
 template <typename T>
-bool linalg::Matrix<T>::operator==(const Matrix<T>& m) const {
-    if (this == &m) {return true;}
-    if (m_columns!=m.m_columns||m_rows!=m.m_rows) {return false;}
-    for (size_t i=0; i<m_rows*m_columns; ++i) {
-        if (m_ptr[i] == m.m_ptr[i]) {return true;}
+template <typename Y>
+bool linalg::Matrix<T>::operator==(const Matrix<Y>& m) const {
+    if constexpr (std::is_same_v<T, Y>) {
+        if (this == &m) {
+            return true;
+        }
+    }
+    if (m_columns != m.columns() || m_rows != m.rows()) {
+        return false;
+    }
+    for (size_t i = 0; i < m_rows * m_columns; ++i) {
+        if (m_ptr[i] != static_cast<T>(m[i])) {
+            return false;
+        }
     }
     return true;
 }
 
 template <typename T>
-bool linalg::Matrix<T>::operator!=(const Matrix<T>& m) const {
-    if (m_columns!=m.m_columns||m_rows!=m.m_rows) { return true;}
-    for (size_t i=0; i<m_rows*m_columns; ++i) {
-        if (m_ptr[i] != m.m_ptr[i]) { return true;}
-    }
-    return false;
+template <typename Y>
+bool linalg::Matrix<T>::operator!=(const Matrix<Y>& m) const {
+    return !(*this == m);
 }
-//
+
+
+template <typename T>
+bool linalg::Matrix<T>::operator==(const Matrix<double>& m) const {
+    if (m_columns!=m.columns()||m_rows!=m.rows()) {return false;}
+    for (size_t i=0; i<m_rows*m_columns; ++i) {
+        if (std::abs(m_ptr[i] - m[i]) <= eps*100) {return true;}
+    }
+    return true;
+}
+
+template <typename T>
+bool linalg::Matrix<T>::operator!=(const Matrix<double>& m) const {
+    if (m_columns!=m.columns()||m_rows!=m.rows()) {return true;}
+    for (size_t i=0; i<m_rows*m_columns; ++i) {
+        if (std::abs(m_ptr[i] - m[i]) <= eps*100) {return false;}
+    }
+    return true;
+}
+
 template <typename T>
 double& linalg::Matrix<T>::operator()(const size_t& m_row, const size_t& m_column) {
     if (m_row >= m_rows || m_column >= m_columns) {
@@ -300,6 +325,7 @@ double& linalg::Matrix<T>::operator()(const size_t& m_row, const size_t& m_colum
     }
     return m_ptr[m_row * m_columns + m_column];
 }
+
 template <typename T>
 double linalg::Matrix<T>::operator()(const size_t& m_row, const size_t& m_column) const {
     if (m_row >= m_rows || m_column >= m_columns) {
