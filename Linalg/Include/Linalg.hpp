@@ -176,31 +176,32 @@ linalg::Matrix<T>& linalg::Matrix<T>::operator=(Matrix<T>&& m) noexcept {
 template <typename T>
 template <typename Y>
 linalg::Matrix<T>& linalg::Matrix<T>::operator=(const Matrix<Y>& m) {
-    if (m_capacity < m.size()) {
-        return *this = Matrix{m};
-    }
-
-    size_t i = 0;
-    for (; i < std::min(m_size, m.size()); ++i) {
-        m_ptr[i] = static_cast<T>(m[i]);
-    }
-
-    if (m_size < m.size()) {
-        for (; i < m.size(); ++i) {
-            new (m_ptr + i) T(static_cast<T>(m[i]));
-        }
-    } else {
-        for (; i < m_size; ++i) {
-            m_ptr[i].~T();
-        }
-    }
-
-    // Обновляем метаданные
-    m_rows = m.rows();
-    m_columns = m.columns();
-    m_size = m.size();
-
-    return *this;
+    return *this = static_cast<Matrix<T>>(m);
+//    if (m_capacity < m.size()) {
+//        return *this = Matrix{m};
+//    }
+//
+//    size_t i = 0;
+//    for (; i < std::min(m_size, m.size()); ++i) {
+//        m_ptr[i] = static_cast<T>(m[i]);
+//    }
+//
+//    if (m_size < m.size()) {
+//        for (; i < m.size(); ++i) {
+//            new (m_ptr + i) T(static_cast<T>(m[i]));
+//        }
+//    } else {
+//        for (; i < m_size; ++i) {
+//            m_ptr[i].~T();
+//        }
+//    }
+//
+//    // Обновляем метаданные
+//    m_rows = m.rows();
+//    m_columns = m.columns();
+//    m_size = m.size();
+//
+//    return *this;
 }
 
 template <typename T>
