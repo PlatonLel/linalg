@@ -96,7 +96,7 @@ linalg::Matrix<T>& linalg::Matrix<T>::operator+=(const Matrix<Y>& m){
         throw Wrong_matrix_size(3);
     }
     for (size_t i=0;i<m_size;++i){
-        m_ptr[i]+=m[i];
+        m_ptr[i]+=static_cast<T>(m[i]);
     };
     return *this;
 }
@@ -111,23 +111,25 @@ linalg::Matrix<T> linalg::operator*(const Matrix<T>& m1, const Matrix<T>& m2) {
 
     return m_return;
 }
+
 template <typename T>
-linalg::Matrix<T>& linalg::Matrix<T>::operator*=(const Matrix<T>& m) {
-    if (m_columns != m.m_rows) {
+template <typename Y>
+linalg::Matrix<T>& linalg::Matrix<T>::operator*=(const Matrix<Y>& m) {
+    if (m_columns != m.rows()) {
         throw Wrong_matrix_size(2);
     }
-    Matrix m_return(m_rows, m.m_columns);
+    Matrix m_return(m_rows, m.columns());
     for (size_t i = 0; i < m_rows; ++i) {
-        for (size_t j = 0; j < m.m_columns; ++j) {
-            m_return.m_ptr[i * m.m_columns + j] = 0;
+        for (size_t j = 0; j < m.columns(); ++j) {
+            m_return[i * m.columns() + j] = 0;
             for (size_t k = 0; k < m_columns; ++k) {
-                m_return.m_ptr[i * m.m_columns + j] += m_ptr[i * m_columns + k] * m.m_ptr[k * m.m_columns + j];
+                m_return[i * m.columns() + j] += static_cast<T>(m_ptr[i * m_columns + k]) * static_cast<T>(m[k * m.columns() + j]);
             }
         }
     }
-    for (size_t i=0; i<m_return.m_columns*m_return.m_rows; ++i) {
-        if(std::abs(m_return.m_ptr[i])<eps*1000) {
-            m_return.m_ptr[i]=0;
+    for (size_t i=0; i<m_return.columns()*m_return.rows(); ++i) {
+        if(std::abs(m_return[i])<eps*1000) {
+            m_return[i]=0;
         }
     }
     *this = std::move(m_return);
@@ -145,8 +147,10 @@ linalg::Matrix<T> linalg::operator*(const double& v, const Matrix<T>& m) {
     m_return*=v;
     return m_return;
 }
+
 template <typename T>
-linalg::Matrix<T>& linalg::Matrix<T>::operator*=(const double& v) noexcept {
+template <typename Y>
+linalg::Matrix<T>& linalg::Matrix<T>::operator*=(const Y& v) noexcept {
     for (size_t i=0; i<m_columns*m_rows; ++i) {
         m_ptr[i] *= v;
     }
@@ -206,6 +210,7 @@ linalg::Matrix<T>& linalg::Matrix<T>::operator=(const Matrix<Y>& m) {
 
 template <typename T>
 linalg::Matrix<T>& linalg::Matrix<T>::operator=(const Matrix<T>& m) {
+    if (*this == m) return *this;
     if (m_capacity < m.size()) {
         return *this = Matrix{m};
     }
@@ -235,28 +240,21 @@ linalg::Matrix<T>& linalg::Matrix<T>::operator=(const Matrix<T>& m) {
 
 
 template <typename T>
-linalg::Matrix<T> linalg::Matrix<T>::operator+(const Matrix<T>& m) const {
-    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
+template <typename Y>
+linalg::Matrix<T> linalg::Matrix<T>::operator+(const Matrix<Y>& m) const {
+    if (m_rows != m.rows()|| m_columns != m.columns()) {
         throw Wrong_matrix_size(3);
     }
     Matrix m_return(*this);
     m_return+=m;
     return m_return;
 }
-template <typename T>
-linalg::Matrix<T>& linalg::Matrix<T>::operator+=(const Matrix<T>& m) {
-    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
-        throw Wrong_matrix_size(4);
-    }
-    for (size_t i=0; i<(m_rows*m_columns); ++i) {
-        m_ptr[i] += m.m_ptr[i];
-    }
-    return *this;
-}
+
 
 template <typename T>
-linalg::Matrix<T> linalg::Matrix<T>::operator-(const Matrix<T>& m) const {
-    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
+template <typename Y>
+linalg::Matrix<T> linalg::Matrix<T>::operator-(const Matrix<Y>& m) const {
+    if (m_rows != m.rows()|| m_columns != m.columns()) {
         throw Wrong_matrix_size(5);
     }
     Matrix m_return(*this);
@@ -265,12 +263,13 @@ linalg::Matrix<T> linalg::Matrix<T>::operator-(const Matrix<T>& m) const {
 }
 
 template <typename T>
-linalg::Matrix<T>& linalg::Matrix<T>::operator-=(const Matrix<T>& m) {
-    if (m_rows != m.m_rows|| m_columns != m.m_columns) {
+template <typename Y>
+linalg::Matrix<T>& linalg::Matrix<T>::operator-=(const Matrix<Y>& m) {
+    if (m_rows != m.rows()|| m_columns != m.columns()) {
         throw Wrong_matrix_size(6);
     }
     for (size_t i=0; i<(m_rows*m_columns); ++i) {
-        m_ptr[i] -= m.m_ptr[i];
+        m_ptr[i] -= static_cast<T>(m[i]);
     }
     return *this;
 }

@@ -62,20 +62,23 @@ namespace linalg {
         Matrix& operator=(const Matrix<Y>& m);
 
         Matrix &operator=(const Matrix& m);
+        template <typename Y>
+        Matrix operator+(const Matrix<Y>& m) const;
 
-        Matrix operator+(const Matrix& m) const;
-
-        Matrix& operator+=(const Matrix& m) ;
         template <typename Y>
         Matrix& operator+=(const Matrix<Y>& m) ;
 
-        Matrix operator-(const Matrix& m) const;
+        template <typename Y>
+        Matrix operator-(const Matrix<Y>& m) const;
 
-        Matrix& operator-=(const Matrix& m);
+        template <typename Y>
+        Matrix& operator-=(const Matrix<Y>& m);
 
-        Matrix &operator*=(const Matrix& m);
+        template <typename Y>
+        Matrix &operator*=(const Matrix<Y>& m);
 
-        Matrix &operator*=(const double& v) noexcept;
+        template <typename Y>
+        Matrix &operator*=(const Y& v) noexcept;
 
         bool operator==(const Matrix& m) const;
 
