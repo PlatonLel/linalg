@@ -19,10 +19,12 @@ namespace linalg {
         template<typename Y>
         Matrix(const Matrix<Y>& m) { copy_constructor(m); }
         Matrix(const Matrix& m) { copy_constructor(m); }
-        Matrix(Matrix&& m) noexcept { swap(m); }
 
+        Matrix(Matrix&& m) noexcept { swap(m); }
+//        template<typename Y>
         Matrix(std::initializer_list<std::initializer_list<T>> m);
 
+//        template<typename Y>
         Matrix(std::initializer_list<T> m);
 
         ~Matrix() noexcept;
@@ -31,8 +33,8 @@ namespace linalg {
         const T* end() const noexcept { return m_ptr + m_size; }
         T* begin() noexcept { return m_ptr; }
         T* end() noexcept { return m_ptr + m_size; }
-        size_t size() const noexcept { return m_size; }
-        size_t capacity() const noexcept { return m_capacity; }
+        const size_t size() const noexcept { return m_size; }
+        const size_t capacity() const noexcept { return m_capacity; }
         const size_t& rows() const noexcept { return m_rows; }
 
         const size_t& columns() const noexcept { return m_columns; }
@@ -54,21 +56,22 @@ namespace linalg {
         double det() const;
 //метод гаусс возвращает количество раз, когда строки менялись местами, он нужен для det(), но можно вызвать для любой матрицы
         size_t gauss() noexcept;
-        template <typename Y>
-        Matrix &operator=(Matrix<Y>&& m) noexcept;
+        Matrix& operator=(Matrix&& m) noexcept;
 
         template <typename Y>
-        Matrix &operator=(const Matrix<Y>& m);
+        Matrix& operator=(const Matrix<Y>& m);
+
+        Matrix &operator=(const Matrix& m);
 
         Matrix operator+(const Matrix& m) const;
 
-        Matrix &operator+=(const Matrix& m) ;
+        Matrix& operator+=(const Matrix& m) ;
         template <typename Y>
-        Matrix &operator+=(const Matrix<Y>& m) ;
+        Matrix& operator+=(const Matrix<Y>& m) ;
 
         Matrix operator-(const Matrix& m) const;
 
-        Matrix &operator-=(const Matrix& m);
+        Matrix& operator-=(const Matrix& m);
 
         Matrix &operator*=(const Matrix& m);
 
