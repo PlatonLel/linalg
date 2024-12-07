@@ -21,11 +21,11 @@ namespace linalg {
         Matrix(const Matrix& m) { copy_constructor(m); }
 
         Matrix(Matrix&& m) noexcept { swap(m); }
-//        template<typename Y>
-        Matrix(std::initializer_list<std::initializer_list<T>> m);
+        template<typename Y>
+        Matrix(std::initializer_list<std::initializer_list<Y>> m);
 
-//        template<typename Y>
-        Matrix(std::initializer_list<T> m);
+        template<typename Y>
+        Matrix(std::initializer_list<Y> m);
 
         ~Matrix() noexcept;
 
@@ -39,7 +39,7 @@ namespace linalg {
 
         const size_t& columns() const noexcept { return m_columns; }
 
-        double* get_ptr() const noexcept { return m_ptr; }
+        T* get_ptr() const noexcept { return m_ptr; }
 
         void swap_rows(const size_t& row1,const size_t& row2) noexcept;
 
@@ -49,11 +49,11 @@ namespace linalg {
 
         void reshape(const size_t& rows,const size_t& new_columns);
 
-        double norm() const;
+        T norm() const;
 
-        double trace() const;
+        T trace() const;
 
-        double det() const;
+        T det() const;
 //метод гаусс возвращает количество раз, когда строки менялись местами, он нужен для det(), но можно вызвать для любой матрицы
         size_t gauss() noexcept;
         Matrix& operator=(Matrix&& m) noexcept;
@@ -90,9 +90,9 @@ namespace linalg {
         template <typename Y>
         bool operator!=(const Matrix<Y>& m) const;
 
-        double &operator()(const size_t& m_row, const size_t& m_column);
+        T &operator()(const size_t& m_row, const size_t& m_column);
 
-        double operator()(const size_t& m_row, const size_t& m_column) const;
+        T operator()(const size_t& m_row, const size_t& m_column) const;
 
         const T& operator[](size_t i) const noexcept { return m_ptr[i]; }
         T& operator[](size_t i) noexcept { return m_ptr[i]; }
@@ -142,10 +142,10 @@ namespace linalg {
 ////а также проихводят прямую подстановку единичного вектора и обратную подстановку вектора, который является результатом прямой
 ////ф
     template <typename T>
-    double get_sum_L(size_t& m_row, size_t& m_column, Matrix<T>& m_L, Matrix<T>& m_U);
+    T get_sum_L(size_t& m_row, size_t& m_column, Matrix<T>& m_L, Matrix<T>& m_U);
 
     template <typename T>
-    double get_sum_U(size_t& m_row, size_t& m_column, Matrix<T>& m_L, Matrix<T>& m_U);
+    T get_sum_U(size_t& m_row, size_t& m_column, Matrix<T>& m_L, Matrix<T>& m_U);
 
     template <typename T>
     Matrix<T> forward_substitution(const Matrix<T>& m_L, const Matrix<T>& b);
@@ -176,4 +176,4 @@ namespace linalg {
     };
 }
 
-#include<Linalg.hpp>
+#include"Linalg.hpp"

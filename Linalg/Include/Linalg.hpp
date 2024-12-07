@@ -18,8 +18,8 @@ void linalg::Matrix<T>::copy_constructor(const Matrix<Y>& m)  {
 }
 
 template <typename T>
-//template <typename Y>
-linalg::Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> m) {
+template <typename Y>
+linalg::Matrix<T>::Matrix(std::initializer_list<std::initializer_list<Y>> m) {
     if (m.size() == 0) {
         return;
     }
@@ -44,8 +44,8 @@ linalg::Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> m) {
 }
 
 template <typename T>
-//template <typename Y>
-linalg::Matrix<T>::Matrix(std::initializer_list<T> m) {
+template <typename Y>
+linalg::Matrix<T>::Matrix(std::initializer_list<Y> m) {
 
     if (m.size() == 0) {
         return;
@@ -232,12 +232,9 @@ linalg::Matrix<T>& linalg::Matrix<T>::operator=(const Matrix<T>& m) {
             m_ptr[i].~T();
         }
     }
-
-    // Обновляем метаданные
     m_rows = m.rows();
     m_columns = m.columns();
     m_size = m.size();
-
     return *this;
 }
 
@@ -322,7 +319,7 @@ bool linalg::Matrix<T>::operator!=(const Matrix<double>& m) const {
 }
 
 template <typename T>
-double& linalg::Matrix<T>::operator()(const size_t& m_row, const size_t& m_column) {
+T& linalg::Matrix<T>::operator()(const size_t& m_row, const size_t& m_column) {
     if (m_row >= m_rows || m_column >= m_columns) {
         throw Wrong_matrix_size(7);
     }
@@ -330,7 +327,7 @@ double& linalg::Matrix<T>::operator()(const size_t& m_row, const size_t& m_colum
 }
 
 template <typename T>
-double linalg::Matrix<T>::operator()(const size_t& m_row, const size_t& m_column) const {
+T linalg::Matrix<T>::operator()(const size_t& m_row, const size_t& m_column) const {
     if (m_row >= m_rows || m_column >= m_columns) {
         throw Wrong_matrix_size(7);
     }
@@ -376,11 +373,11 @@ std::ostream& linalg::operator<<(std::ostream& os, const Matrix<T>& m) {
 }
 
 template <typename T>
-double linalg::Matrix<T>::norm() const {
+T linalg::Matrix<T>::norm() const {
     if (empty()) {
         throw Empty_matrix(0);
     }
-    double norm=0;
+    T norm=0;
     for (size_t i=0; i<(m_rows*m_columns); ++i) {
         norm += (m_ptr[i])*(m_ptr[i]);
     }
@@ -416,7 +413,7 @@ void linalg::Matrix<T>::swap_rows(const size_t& row_1, const size_t& row_2) noex
 }
 
 template <typename T>
-double linalg::Matrix<T>::det() const {
+T linalg::Matrix<T>::det() const {
     if (empty()) {
         throw Empty_matrix(1);
     }
@@ -426,7 +423,7 @@ double linalg::Matrix<T>::det() const {
     Matrix m = *this;
     //вызываем метод гаусса, который поменяет матрицу и вернет кол-во свапнутых строк
     size_t swap_counter = m.gauss();
-    double det_value = 1;
+    T det_value = 1;
 
     for (size_t l=0; l<m_rows; ++l) {
         det_value *= m.m_ptr[m_columns*l + l];
@@ -436,7 +433,7 @@ double linalg::Matrix<T>::det() const {
 }
 
 template <typename T>
-double  linalg::Matrix<T>::trace() const {
+T  linalg::Matrix<T>::trace() const {
     if (empty()) {
         throw Empty_matrix(2);
     }
@@ -444,7 +441,7 @@ double  linalg::Matrix<T>::trace() const {
     if (m_rows != m_columns){
         throw Wrong_matrix_size(10);
     }
-    double m_trace=0;
+    T m_trace=0;
     for (size_t i=0; i<m_rows; ++i) {
         m_trace += m_ptr[m_rows*i + i];
     }
@@ -482,7 +479,7 @@ size_t linalg::Matrix<T>::gauss() noexcept{
         }
 
         for (size_t l = i + 1; l < m_rows; ++l) {
-            double coefficient = m_ptr[l * m_columns + lead_element] / m_ptr[i * m_columns + lead_element];
+            T coefficient = m_ptr[l * m_columns + lead_element] / m_ptr[i * m_columns + lead_element];
             for (size_t s = 0; s < m_columns; ++s) {
                 m_ptr[l * m_columns + s] -= coefficient * m_ptr[i * m_columns + s];
             }
@@ -649,8 +646,8 @@ linalg::Matrix<T> linalg::invert(const Matrix<T>& m) {
 
 
 template <typename T>
-double linalg::get_sum_U(size_t& m_row, size_t& m_column, Matrix<T>& m_L, Matrix<T>& m_U) {
-    double result = 0;
+T linalg::get_sum_U(size_t& m_row, size_t& m_column, Matrix<T>& m_L, Matrix<T>& m_U) {
+    T result = 0;
 
     for (size_t i=0; i<m_column; ++i) {
         if (std::abs(m_L(m_row,i)) <= eps*1000) {
@@ -667,8 +664,8 @@ double linalg::get_sum_U(size_t& m_row, size_t& m_column, Matrix<T>& m_L, Matrix
 }
 //
 template <typename T>
-double linalg::get_sum_L(size_t& m_row, size_t& m_column, Matrix<T>& m_L, Matrix<T>& m_U) {
-    double result = 0;
+T linalg::get_sum_L(size_t& m_row, size_t& m_column, Matrix<T>& m_L, Matrix<T>& m_U) {
+    T result = 0;
 
     for (size_t i=0; i<m_column; ++i) {
         if (std::abs(m_L(m_column,i)) <= eps*1000) {
