@@ -14,6 +14,7 @@ void linalg::Matrix<T>::copy_constructor(const Matrix<Y>& m)  {
     m_size = m.size();
     m_columns = m.columns();
     m_rows = m.rows();
+    m_capacity = m.capacity();
 }
 
 template <typename T>
@@ -39,6 +40,7 @@ linalg::Matrix<T>::Matrix(std::initializer_list<std::initializer_list<T>> m) {
     m_columns = m.begin()->size();
     m_rows = m.size();
     m_size = m_columns*m_rows;
+    m_capacity = m_size;
 }
 
 template <typename T>
@@ -57,6 +59,7 @@ linalg::Matrix<T>::Matrix(std::initializer_list<T> m) {
     m_columns = m.size();
     m_rows = 1;
     m_size = m_columns*m_rows;
+    m_capacity = m_size;
 }
 
 template <typename T>
@@ -180,7 +183,7 @@ linalg::Matrix<T>& linalg::Matrix<T>::operator=(Matrix<T>&& m) noexcept {
 template <typename T>
 template <typename Y>
 linalg::Matrix<T>& linalg::Matrix<T>::operator=(const Matrix<Y>& m) {
-    return *this = static_cast<Matrix<T>>(m);
+    return *this = Matrix<T>(m);
 //    if (m_capacity < m.size()) {
 //        return *this = Matrix{m};
 //    }
@@ -389,12 +392,18 @@ void linalg::Matrix<T>::reshape(const size_t& new_rows, const size_t& new_column
     if(this->empty()) {
         return;
     }
-    if (new_columns * new_rows != m_size) {
-        throw Wrong_matrix_size(8);
+    Matrix<T> m_temp = *this;
+    *this = Matrix<T>(new_rows,new_columns);
+    if (m_capacity<new_columns*new_rows) {
+        *this = m_temp;
+        m_columns = new_columns;
+        m_rows = new_rows;
+        m_size = m_rows*m_columns;
+        return;
     }
-    m_columns = new_columns;
-    m_rows = new_rows;
-    m_size = m_rows * m_columns;
+    for (size_t i = 0; i < this->m_size; ++i) {
+        m_ptr[i] = m_temp[i];
+    }
 }
 
 template <typename T>
@@ -840,3 +849,4 @@ void linalg::Matrix<T>::reserve(size_t n) {
     m_ptr = reinterpret_cast<T*>(operator new(n * sizeof(T)));
     m_capacity = n;
 }
+
