@@ -7,7 +7,12 @@
 #include <iomanip>   // std::setw
 #include <algorithm> // std::max
 #include <iostream> //std::cout
-
+#include <fstream>
+#include <vector>
+#include <stdexcept>
+#include <string>
+#include <vector>
+#include "Complex.h" //Complex
 
 namespace linalg {
     template <typename T>
@@ -152,6 +157,8 @@ namespace linalg {
 
     template <typename T>
     Matrix<T> backward_substitution(const Matrix<T>& m_U, const Matrix<T>& y);
+
+    Matrix<Complex> load_matrix(const char* file_name);
 ////класс исключений, от которого будут наследовать остальные
     class Matrix_exception {
     public:

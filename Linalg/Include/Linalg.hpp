@@ -23,25 +23,29 @@ linalg::Matrix<T>::Matrix(std::initializer_list<std::initializer_list<Y>> m) {
     if (m.size() == 0) {
         return;
     }
-    m_ptr = reinterpret_cast<T *>(operator new(m.size() * m.begin()->size() * sizeof(T)));
-    T *ptr = m_ptr;
-    for (const auto &row: m) {
-        if (row.size() != m.begin()->size()) {
+
+    size_t cols = m.begin()->size();
+    for (const auto& row : m) {
+        if (row.size() != cols) {
             throw Wrong_matrix_size(0);
         }
-        else if (row.size() == 0) {
-            return;
-        }
-        for (const T &el: row) {
+    }
+
+    m_rows = m.size();
+    m_columns = cols;
+    m_size = m_rows * m_columns;
+    m_capacity = m_size;
+    m_ptr = reinterpret_cast<T*>(operator new(m_size * sizeof(T)));
+
+    T* ptr = m_ptr;
+    for (const auto& row : m) {
+        for (const auto& el : row) {
             new (ptr) T(static_cast<T>(el));
             ++ptr;
         }
     }
-    m_columns = m.begin()->size();
-    m_rows = m.size();
-    m_size = m_columns*m_rows;
-    m_capacity = m_size;
 }
+
 
 template <typename T>
 template <typename Y>
@@ -339,36 +343,42 @@ std::ostream& linalg::operator<<(std::ostream& os, const Matrix<T>& m) {
     if (m.empty()) {
         throw Empty_matrix(6);
     }
+
     size_t max_width_first_column = 0;
     size_t max_width = 0;
     std::ostringstream temp;
-//проходимся по элементам и вычисляем максимальную длину в 1 столбце и в остальных
+    
     for (size_t i = 0; i < m.rows(); ++i) {
-        temp << m(i, 0);
-        max_width_first_column = std::max(max_width_first_column, temp.str().length());
-        temp.str("");
         for (size_t j = 0; j < m.columns(); ++j) {
-            temp << m(i, j);
-            max_width = std::max(max_width, temp.str().length());
             temp.str("");
+            temp.clear();
+            temp << m(i, j);
+
+            if (j == 0) {
+                max_width_first_column = std::max(max_width_first_column, temp.str().length());
+            }
+            max_width = std::max(max_width, temp.str().length());
         }
     }
 
+    std::ostringstream sout;
     for (size_t i = 0; i < m.rows(); ++i) {
-        os << "|";
+        sout << "|";
         for (size_t j = 0; j < m.columns(); ++j) {
-            if (j==m.columns()-1) {
-                os << std::setw(max_width) << m(i, j);
-            }
-            else if (j==0) {
-                os << std::setw(max_width_first_column) << m(i, j) << " ";
-            }
-            else {
-                os << std::setw(max_width) << m(i, j) << " ";
+            temp.str("");
+            temp.clear();
+            temp << m(i, j);
+
+            if (j == 0) {
+                sout << std::setw(max_width_first_column) << temp.str() << " ";
+            } else {
+                sout << std::setw(max_width) << temp.str() << (j == m.columns() - 1 ? "" : " ");
             }
         }
-        os << "|\n";
+        sout << "|\n";
     }
+
+    os << sout.str();
     return os;
 }
 
@@ -838,6 +848,7 @@ void linalg::Matrix<T>::clear() noexcept {
         ptr->~T();
     }
     m_size = 0;
+    m_capacity = 0;
 }
 
 template <typename T>
@@ -847,3 +858,64 @@ void linalg::Matrix<T>::reserve(size_t n) {
     m_capacity = n;
 }
 
+Complex parse_complex(const std::string& str) {
+    size_t pos = str.find('+');
+    if (pos == std::string::npos) {
+        pos = str.find('-');
+    }
+
+    double real = std::stod(str.substr(0, pos));
+    double imag = std::stod(str.substr(pos, str.length() - pos - 1));
+
+    return Complex(real, imag);
+}
+
+linalg::Matrix<Complex> load_matrix(const char* file_name) {
+    std::ifstream file(file_name);
+    if (!file.is_open()) {
+        throw std::runtime_error("Unable to open file");
+    }
+
+    std::string line;
+    size_t rows = 0;
+    size_t cols = 0;
+
+    while (std::getline(file, line)) {
+        std::istringstream row_stream(line);
+        size_t col_count = 0;
+        std::string complex_str;
+
+        while (row_stream >> complex_str) {
+            col_count++;
+        }
+
+        if (cols == 0) {
+            cols = col_count;
+        } else if (cols != col_count) {
+            throw std::runtime_error("Row size mismatch");
+        }
+
+        rows++;
+    }
+
+    file.clear();
+    file.seekg(0);
+
+    linalg::Matrix<Complex> matrix(rows, cols);
+
+    size_t row = 0;
+    while (std::getline(file, line)) {
+        std::istringstream row_stream(line);
+        std::string complex_str;
+        size_t col = 0;
+
+        while (row_stream >> complex_str) {
+            Complex complex_num = parse_complex(complex_str);
+            matrix(row, col) = complex_num;
+            col++;
+        }
+        row++;
+    }
+
+    return matrix;
+}
