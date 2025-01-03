@@ -347,7 +347,7 @@ std::ostream& linalg::operator<<(std::ostream& os, const Matrix<T>& m) {
     size_t max_width_first_column = 0;
     size_t max_width = 0;
     std::ostringstream temp;
-    
+
     for (size_t i = 0; i < m.rows(); ++i) {
         for (size_t j = 0; j < m.columns(); ++j) {
             temp.str("");
@@ -858,19 +858,37 @@ void linalg::Matrix<T>::reserve(size_t n) {
     m_capacity = n;
 }
 
-Complex parse_complex(const std::string& str) {
-    size_t pos = str.find('+');
-    if (pos == std::string::npos) {
-        pos = str.find('-');
+Complex linalg::parse_complex(const std::string& complex_str) {
+    size_t i_pos = complex_str.find('i');
+    if (i_pos == std::string::npos) {
+        throw std::invalid_argument("Invalid complex number format: " + complex_str);
     }
 
-    double real = std::stod(str.substr(0, pos));
-    double imag = std::stod(str.substr(pos, str.length() - pos - 1));
+    size_t plus_pos = complex_str.find('+');
+    size_t minus_pos = complex_str.find('-', 1);
 
-    return Complex(real, imag);
+    double real = 0.0;
+    double img = 0.0;
+
+    try {
+        if (plus_pos != std::string::npos) {
+            real = std::stod(complex_str.substr(0, plus_pos));
+            img = std::stod(complex_str.substr(plus_pos + 1, i_pos - plus_pos - 1));
+        } else if (minus_pos != std::string::npos) {
+            real = std::stod(complex_str.substr(0, minus_pos));
+            img = std::stod(complex_str.substr(minus_pos, i_pos - minus_pos));
+        } else {
+            throw std::invalid_argument("Invalid complex number format: " + complex_str);
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Error parsing complex number: " << complex_str << "\n";
+        throw;
+    }
+
+    return {real, img};
 }
 
-linalg::Matrix<Complex> load_matrix(const char* file_name) {
+linalg::Matrix<Complex> linalg::load_matrix(const char* file_name) {
     std::ifstream file(file_name);
     if (!file.is_open()) {
         throw std::runtime_error("Unable to open file");
@@ -881,6 +899,7 @@ linalg::Matrix<Complex> load_matrix(const char* file_name) {
     size_t cols = 0;
 
     while (std::getline(file, line)) {
+        line.erase(std::remove(line.begin(), line.end(), '|'), line.end());
         std::istringstream row_stream(line);
         size_t col_count = 0;
         std::string complex_str;
@@ -905,6 +924,7 @@ linalg::Matrix<Complex> load_matrix(const char* file_name) {
 
     size_t row = 0;
     while (std::getline(file, line)) {
+        line.erase(std::remove(line.begin(), line.end(), '|'), line.end());
         std::istringstream row_stream(line);
         std::string complex_str;
         size_t col = 0;

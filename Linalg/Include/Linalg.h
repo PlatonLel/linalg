@@ -158,15 +158,18 @@ namespace linalg {
     template <typename T>
     Matrix<T> backward_substitution(const Matrix<T>& m_U, const Matrix<T>& y);
 
+    Complex parse_complex(const std::string& complex_str);
+
     Matrix<Complex> load_matrix(const char* file_name);
-////класс исключений, от которого будут наследовать остальные
+
+////    класс исключений, от которого будут наследовать остальные
     class Matrix_exception {
     public:
         std::string what() {return description;}
     protected:
         std::string description;
     };
-//в зависимости от параметра задается значение description
+//// в зависимости от параметра задается значение description
     class Wrong_matrix_size: public ::linalg::Matrix_exception {
     public:
         Wrong_matrix_size(size_t p);
