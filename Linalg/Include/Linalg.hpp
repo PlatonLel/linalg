@@ -1,5 +1,3 @@
-#include <algorithm>
-#include <iomanip>
 
 double eps = std::numeric_limits<double>::epsilon();
 
@@ -888,25 +886,32 @@ Complex linalg::parse_complex(const std::string& complex_str) {
     return {real, img};
 }
 
-linalg::Matrix<Complex> linalg::load_matrix(const char* file_name) {
-    std::ifstream file(file_name);
-    if (!file.is_open()) {
-        throw std::runtime_error("Unable to open file");
+bool linalg::validate_line_format(const std::string& line) {
+    return !line.empty() && line.front() == '|' && line.back() == '|';
+}
+
+size_t linalg::count_columns(const std::string& line) {
+    std::istringstream row_stream(line);
+    size_t col_count = 0;
+    std::string complex_str;
+
+    while (row_stream >> complex_str) {
+        col_count++;
     }
 
+    return col_count;
+}
+
+void linalg::load_matrix_dimensions(std::ifstream& file, size_t& rows, size_t& cols) {
     std::string line;
-    size_t rows = 0;
-    size_t cols = 0;
 
     while (std::getline(file, line)) {
-        line.erase(std::remove(line.begin(), line.end(), '|'), line.end());
-        std::istringstream row_stream(line);
-        size_t col_count = 0;
-        std::string complex_str;
-
-        while (row_stream >> complex_str) {
-            col_count++;
+        if (!validate_line_format(line)) {
+            throw std::runtime_error("Invalid matrix format: rows must be enclosed in '|'");
         }
+
+        line.erase(std::remove(line.begin(), line.end(), '|'), line.end()); // Remove '|' characters
+        size_t col_count = count_columns(line);
 
         if (cols == 0) {
             cols = col_count;
@@ -919,12 +924,18 @@ linalg::Matrix<Complex> linalg::load_matrix(const char* file_name) {
 
     file.clear();
     file.seekg(0);
+}
 
-    linalg::Matrix<Complex> matrix(rows, cols);
-
+void linalg::load_matrix_data(std::ifstream& file, linalg::Matrix<Complex>& matrix) {
+    std::string line;
     size_t row = 0;
+
     while (std::getline(file, line)) {
-        line.erase(std::remove(line.begin(), line.end(), '|'), line.end());
+        if (!validate_line_format(line)) {
+            throw std::runtime_error("Invalid matrix format: rows must be enclosed in '|'");
+        }
+
+        line.erase(std::remove(line.begin(), line.end(), '|'), line.end()); // Remove '|' characters
         std::istringstream row_stream(line);
         std::string complex_str;
         size_t col = 0;
@@ -936,6 +947,21 @@ linalg::Matrix<Complex> linalg::load_matrix(const char* file_name) {
         }
         row++;
     }
+}
+
+linalg::Matrix<Complex> linalg::load_matrix(const char* file_name) {
+    std::ifstream file(file_name);
+    if (!file.is_open()) {
+        throw std::runtime_error("Unable to open file");
+    }
+
+    size_t rows = 0;
+    size_t cols = 0;
+    load_matrix_dimensions(file, rows, cols);
+
+    linalg::Matrix<Complex> matrix(rows, cols);
+    load_matrix_data(file, matrix);
 
     return matrix;
 }
+

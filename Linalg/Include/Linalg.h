@@ -12,6 +12,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <filesystem>
 #include "Complex.h" //Complex
 
 namespace linalg {
@@ -159,6 +160,14 @@ namespace linalg {
     Matrix<T> backward_substitution(const Matrix<T>& m_U, const Matrix<T>& y);
 
     Complex parse_complex(const std::string& complex_str);
+
+    bool validate_line_format(const std::string& line);
+
+    size_t count_columns(const std::string& line);
+
+    void load_matrix_dimensions(std::ifstream& file, size_t& rows, size_t& cols);
+
+    void load_matrix_data(std::ifstream& file, linalg::Matrix<Complex>& matrix);
 
     Matrix<Complex> load_matrix(const char* file_name);
 
