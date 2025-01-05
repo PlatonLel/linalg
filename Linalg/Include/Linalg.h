@@ -41,9 +41,9 @@ namespace linalg {
         T* end() noexcept { return m_ptr + m_size; }
         const size_t size() const noexcept { return m_size; }
         const size_t capacity() const noexcept { return m_capacity; }
-        const size_t& rows() const noexcept { return m_rows; }
+        size_t rows() const noexcept { return m_rows; }
 
-        const size_t& columns() const noexcept { return m_columns; }
+        size_t columns() const noexcept { return m_columns; }
 
         T* get_ptr() const noexcept { return m_ptr; }
 
@@ -171,6 +171,9 @@ namespace linalg {
 
     Matrix<Complex> load_matrix(const char* file_name);
 
+    std::string sanitize_line(const std::string &line);
+
+    void process_matrix_line(const std::string &line, size_t &cols, size_t &rows, Matrix<Complex> *matrix = nullptr);
 ////    класс исключений, от которого будут наследовать остальные
     class Matrix_exception {
     public:
