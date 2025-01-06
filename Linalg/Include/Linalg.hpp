@@ -143,14 +143,14 @@ linalg::Matrix<T> &linalg::Matrix<T>::operator*=(const Matrix <Y> &m) {
 }
 
 template<typename T>
-linalg::Matrix<T> linalg::operator*(const Matrix <T> &m, const double &v) {
+linalg::Matrix<T> linalg::operator*(const Matrix <T> &m, const T& v) {
     Matrix m_return(m);
     m_return *= v;
     return m_return;
 }
 
 template<typename T>
-linalg::Matrix<T> linalg::operator*(const double &v, const Matrix <T> &m) {
+linalg::Matrix<T> linalg::operator*(const T& v, const Matrix <T> &m) {
     Matrix m_return(m);
     m_return *= v;
     return m_return;
@@ -217,10 +217,13 @@ linalg::Matrix<T> &linalg::Matrix<T>::operator=(const Matrix <Y> &m) {
 }
 
 template<typename T>
-linalg::Matrix<T> &linalg::Matrix<T>::operator=(const Matrix <T> &m) {
-    if (*this == m) return *this;
+linalg::Matrix<T> &linalg::Matrix<T>::operator=(const Matrix<T> &m) {
+    if (this == &m) return *this;
+
     if (m_capacity < m.size()) {
-        return *this = Matrix{m};
+        operator delete(m_ptr);
+        m_ptr = reinterpret_cast<T *>(operator new(m.size() * sizeof(T)));
+        m_capacity = m.size();
     }
 
     size_t i = 0;
@@ -230,18 +233,23 @@ linalg::Matrix<T> &linalg::Matrix<T>::operator=(const Matrix <T> &m) {
 
     if (m_size < m.size()) {
         for (; i < m.size(); ++i) {
-            new(m_ptr + i) T(m[i]);
+            new (m_ptr + i) T(m[i]);
         }
-    } else {
+    }
+    else {
         for (; i < m_size; ++i) {
             m_ptr[i].~T();
         }
     }
+
     m_rows = m.rows();
     m_columns = m.columns();
     m_size = m.size();
+    m_capacity = m.capacity();
+
     return *this;
 }
+
 
 
 template<typename T>
@@ -854,6 +862,8 @@ void linalg::Matrix<T>::clear() noexcept {
         ptr->~T();
     }
     m_size = 0;
+    m_columns = 0;
+    m_rows = 0;
     m_capacity = 0;
 }
 
@@ -1004,3 +1014,46 @@ linalg::Matrix<Complex> linalg::load_matrix(const char *file_name) {
 
     return matrix;
 }
+
+void linalg::analyze_matrix(const std::string& file_name) {
+    try {
+        // Загрузка матрицы
+        linalg::Matrix<Complex> matrix = linalg::load_matrix(file_name.c_str());
+        if (matrix.empty()) {
+            throw std::runtime_error("Nothing to analyze because the matrix is empty!");
+        }
+
+        std::cout << "The original matrix was read from file '" << file_name << "':\n";
+        std::cout << matrix << std::endl;
+
+        if (matrix.rows() != matrix.columns()) {
+            std::cout << "Other analyses are not possible due to not squared matrix!\n";
+            return;
+        }
+
+            // Транспонирование
+        std::cout << "Transposed matrix:\n" << linalg::transpose(matrix) << std::endl;
+
+            // След матрицы
+        double trace = 0.0;
+        for (size_t i = 0; i < matrix.rows(); ++i) {
+            trace += matrix(i, i).Real();
+        }
+        std::cout << "Trace: " << trace << std::endl;
+
+            // Определитель
+        Complex determinant = matrix.det();
+        std::cout << "Determinant: " << determinant << std::endl;
+
+            // Обратная матрица
+        if (determinant != 0) {
+            std::cout << "Inverted matrix:\n" << linalg::invert(matrix) << std::endl;
+        } else {
+            std::cout << "Other analyses are not possible due to zero determinant!" << std::endl;
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Error during matrix analysis: " << e.what() << std::endl;
+        throw;
+    }
+}
+

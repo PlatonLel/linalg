@@ -173,6 +173,8 @@ namespace linalg {
 
     std::string sanitize_line(const std::string &line);
 
+    void analyze_matrix(const std::string& file_name);
+
     void process_matrix_line(const std::string &line, size_t &cols, size_t &rows, Matrix<Complex> *matrix = nullptr);
 ////    класс исключений, от которого будут наследовать остальные
     class Matrix_exception {
