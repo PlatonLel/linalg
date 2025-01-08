@@ -96,7 +96,7 @@ linalg::Matrix<T>::Matrix(const size_t &rows, const size_t &columns) {
 
 template<typename T>
 template<typename Y>
-linalg::Matrix<T> &linalg::Matrix<T>::operator+=(const Matrix <Y> &m) {
+linalg::Matrix<T>& linalg::Matrix<T>::operator+=(const Matrix<Y>& m) {
     if (m_columns != m.columns() || m_rows != m.rows()) {
         throw Wrong_matrix_size(3);
     }
@@ -104,17 +104,6 @@ linalg::Matrix<T> &linalg::Matrix<T>::operator+=(const Matrix <Y> &m) {
         m_ptr[i] += static_cast<T>(m[i]);
     };
     return *this;
-}
-
-template<typename T>
-linalg::Matrix<T> linalg::operator*(const Matrix <T> &m1, const Matrix <T> &m2) {
-    if (m1.columns() != m2.rows()) {
-        throw Wrong_matrix_size(1);
-    }
-    Matrix m_return(m1);
-    m_return *= m2;
-
-    return m_return;
 }
 
 template<typename T>
@@ -142,25 +131,56 @@ linalg::Matrix<T> &linalg::Matrix<T>::operator*=(const Matrix <Y> &m) {
     return *this;
 }
 
-template<typename T>
-linalg::Matrix<T> linalg::operator*(const Matrix <T> &m, const T& v) {
-    Matrix m_return(m);
-    m_return *= v;
-    return m_return;
+// Умножение двух матриц (с разными типами элементов)
+template <typename T, typename Y>
+auto linalg::operator*(const Matrix<T>& m1, const Matrix<Y>& m2)
+-> linalg::Matrix<decltype(T{} * Y{})> {
+    using ResultType = decltype(T{} * Y{});
+
+    if (m1.columns() != m2.rows()) {
+        throw Wrong_matrix_size(1);
+    }
+
+    linalg::Matrix<ResultType> result(m1.rows(), m2.columns());
+
+    for (size_t i = 0; i < m1.rows(); ++i) {
+        for (size_t j = 0; j < m2.columns(); ++j) {
+            ResultType sum = 0;
+            for (size_t k = 0; k < m1.columns(); ++k) {
+                sum += static_cast<ResultType>(m1(i, k)) * static_cast<ResultType>(m2(k, j));
+            }
+            result(i, j) = sum;
+        }
+    }
+    return result;
 }
 
-template<typename T>
-linalg::Matrix<T> linalg::operator*(const T& v, const Matrix <T> &m) {
-    Matrix m_return(m);
-    m_return *= v;
-    return m_return;
+// Умножение матрицы на скаляр
+template <typename T, typename Scalar, typename = std::enable_if_t<std::is_arithmetic_v<Scalar>>>
+auto operator*(const linalg::Matrix<T>& m, const Scalar& scalar)
+-> linalg::Matrix<decltype(T{} * scalar)> {
+    using ResultType = decltype(T{} * scalar);
+    linalg::Matrix<ResultType> result(m.rows(), m.columns());
+
+    for (size_t i = 0; i < m.rows() * m.columns(); ++i) {
+        result[i] = static_cast<ResultType>(m[i]) * scalar;
+    }
+    return result;
 }
+
+// Умножение скаляра на матрицу
+template <typename Scalar, typename T, typename = std::enable_if_t<std::is_arithmetic_v<Scalar>>>
+auto operator*(const Scalar& scalar, const linalg::Matrix<T>& m)
+-> linalg::Matrix<decltype(scalar * T{})> {
+    return m * scalar;
+}
+
 
 template<typename T>
 template<typename Y>
 linalg::Matrix<T> &linalg::Matrix<T>::operator*=(const Y &v) noexcept {
     for (size_t i = 0; i < m_columns * m_rows; ++i) {
-        m_ptr[i] *= v;
+        m_ptr[i] *= static_cast<T>(v);
     }
     for (size_t i = 0; i < m_columns * m_rows; ++i) {
         if (std::abs(m_ptr[i]) < eps * 1000) {
@@ -250,34 +270,30 @@ linalg::Matrix<T> &linalg::Matrix<T>::operator=(const Matrix<T> &m) {
     return *this;
 }
 
-
-
-template<typename T>
-template<typename Y>
-linalg::Matrix<T> linalg::Matrix<T>::operator+(const Matrix <Y> &m) const {
-    if (m_rows != m.rows() || m_columns != m.columns()) {
-        throw Wrong_matrix_size(3);
-    }
-    Matrix m_return(*this);
-    m_return += m;
-    return m_return;
-}
-
-
-template<typename T>
-template<typename Y>
-linalg::Matrix<T> linalg::Matrix<T>::operator-(const Matrix <Y> &m) const {
-    if (m_rows != m.rows() || m_columns != m.columns()) {
+template<typename T, typename Y>
+linalg::Matrix<decltype(T{} + Y{})> linalg::operator+(const Matrix<T>& m1, const Matrix<Y>& m2) {
+    if (m1.rows() != m2.rows() || m1.columns() != m2.columns()) {
         throw Wrong_matrix_size(5);
     }
-    Matrix m_return(*this);
-    m_return -= m;
+    Matrix m_return(m1);
+    m_return += m2;
+    return m_return;
+}
+
+
+template<typename T, typename Y>
+linalg::Matrix<decltype(T{} - Y{})> linalg::operator-(const Matrix<T>& m1, const Matrix<Y>& m2) {
+    if (m1.rows() != m2.rows() || m1.columns() != m2.columns()) {
+        throw Wrong_matrix_size(5);
+    }
+    Matrix m_return(m1);
+    m_return -= m2;
     return m_return;
 }
 
 template<typename T>
 template<typename Y>
-linalg::Matrix<T> &linalg::Matrix<T>::operator-=(const Matrix <Y> &m) {
+linalg::Matrix<T>& linalg::Matrix<T>::operator-=(const Matrix<Y>& m) {
     if (m_rows != m.rows() || m_columns != m.columns()) {
         throw Wrong_matrix_size(6);
     }

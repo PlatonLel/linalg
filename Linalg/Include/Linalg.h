@@ -68,23 +68,18 @@ namespace linalg {
         Matrix& operator=(const Matrix<Y>& m);
 
         Matrix &operator=(const Matrix& m);
-        template <typename Y>
-        Matrix operator+(const Matrix<Y>& m) const;
 
         template <typename Y>
-        Matrix& operator+=(const Matrix<Y>& m) ;
+        Matrix<T>& operator+=(const Matrix<Y>& m) ;
 
         template <typename Y>
-        Matrix operator-(const Matrix<Y>& m) const;
+        Matrix<T>& operator-=(const Matrix<Y>& m);
 
         template <typename Y>
-        Matrix& operator-=(const Matrix<Y>& m);
+        Matrix<T> &operator*=(const Matrix<Y>& m);
 
         template <typename Y>
-        Matrix &operator*=(const Matrix<Y>& m);
-
-        template <typename Y>
-        Matrix &operator*=(const Y& v) noexcept;
+        Matrix<T> &operator*=(const Y& v) noexcept;
 
         template <typename Y>
         bool operator==(const Matrix<Y>& m) const;
@@ -123,15 +118,16 @@ namespace linalg {
 
     template <typename T>
     void swap(Matrix<T>& m1, Matrix<T>& m2) { m1.swap(m2); }
-    template <typename T>
-    Matrix<T> operator*(const T& v, const Matrix<T>& m);
-    template <typename T>
-    Matrix<T> operator*( const Matrix<T>& m, const T& v);
-    template <typename T>
-    Matrix<T> operator*(const Matrix<T>& m1, const Matrix<T>& m2);
+    template <typename T, typename Y>
+    auto operator*(const Matrix<T>& m1, const Matrix<Y>& m2)
+    -> Matrix<decltype(T{} * Y{})>;
 
-    template <typename T>
-    std::ostream& operator<<(std::ostream& os, const Matrix<T>& m);
+    template <typename T, typename Y>
+    Matrix<decltype(T{} - Y{})> operator-(const Matrix<T>& m1, const Matrix<Y>& m2);
+
+    template <typename T, typename Y>
+    Matrix<decltype(T{} + Y{})> operator+(const Matrix<T>& m1, const Matrix<Y>& m2);
+
 
     template <typename T>
     Matrix<T> power(const Matrix<T>& m,const int& p);
