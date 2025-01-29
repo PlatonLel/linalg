@@ -36,12 +36,22 @@ linalg::Matrix<T>::Matrix(std::initializer_list<std::initializer_list<Y>> m) {
     m_ptr = reinterpret_cast<T *>(operator new(m_size * sizeof(T)));
 
     T *ptr = m_ptr;
-    for (const auto &row: m) {
-        for (const auto &el: row) {
-            new(ptr) T(static_cast<T>(el));
-            ++ptr;
+    try {
+        for (const auto& row : m) {
+            for (Y el : row) {
+                new(ptr) T(el);
+                ++ptr;
+            }
         }
     }
+    catch (...) {
+        while (--ptr >= m_ptr) {
+            ptr->~T();
+        }
+        operator delete(reinterpret_cast<void*>(m_ptr));
+        throw;
+    }
+
 }
 
 
@@ -54,10 +64,20 @@ linalg::Matrix<T>::Matrix(std::initializer_list<Y> m) {
     }
     m_ptr = reinterpret_cast<T *>(operator new(m.size() * sizeof(T)));
     T *ptr = m_ptr;
-    for (const T &el: m) {
-        new(ptr) T(static_cast<T>(el));
-        ++ptr;
+    try {
+        for (Y el: m) {
+            new(ptr) T(el);
+            ++ptr;
+        }
     }
+    catch (...) {
+        while (--ptr >= m_ptr) {
+            ptr->~T();
+        }
+        operator delete(reinterpret_cast<void*>(m_ptr));
+        throw;
+    }
+
     m_columns = m.size();
     m_rows = 1;
     m_size = m_columns * m_rows;
