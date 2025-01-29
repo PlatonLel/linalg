@@ -773,7 +773,7 @@ linalg::Matrix<T> linalg::forward_substitution(const Matrix <T> &m_L, const Matr
 }
 
 //
-linalg::Wrong_matrix_size::Wrong_matrix_size(size_t p) {
+inline linalg::Wrong_matrix_size::Wrong_matrix_size(size_t p) {
     switch (p) {
         case 0: {
             description = "Wrong initializer_list in constructor of Matrix";
@@ -834,7 +834,7 @@ linalg::Wrong_matrix_size::Wrong_matrix_size(size_t p) {
     }
 }
 
-linalg::Empty_matrix::Empty_matrix(size_t p) {
+inline linalg::Empty_matrix::Empty_matrix(size_t p) {
     switch (p) {
         case 0: {
             description = "Empty matrix in norm";
@@ -867,7 +867,7 @@ linalg::Empty_matrix::Empty_matrix(size_t p) {
     }
 }
 
-linalg::Singular_matrix::Singular_matrix(size_t p) {
+inline linalg::Singular_matrix::Singular_matrix(size_t p) {
     switch (p) {
         case 0: {
             description = "Singular matrix in invert";
