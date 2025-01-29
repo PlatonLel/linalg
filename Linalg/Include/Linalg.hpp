@@ -889,7 +889,7 @@ void linalg::Matrix<T>::shrink_to_fit() {
     if (m_size == m_capacity) {
         return;
     }
-    *this = Matrix{*this};
+    *this = std::move(Matrix{*this});
 }
 
 template<typename T>
