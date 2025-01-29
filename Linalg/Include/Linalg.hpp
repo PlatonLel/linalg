@@ -353,18 +353,14 @@ template<typename T>
 bool linalg::Matrix<T>::operator==(const Matrix<double> &m) const {
     if (m_columns != m.columns() || m_rows != m.rows()) { return false; }
     for (size_t i = 0; i < m_rows * m_columns; ++i) {
-        if (std::abs(m_ptr[i] - m[i]) <= eps * 100) { return true; }
+        if (std::abs(m_ptr[i] - m[i]) >= eps * 100) { return false; }
     }
     return true;
 }
 
 template<typename T>
 bool linalg::Matrix<T>::operator!=(const Matrix<double> &m) const {
-    if (m_columns != m.columns() || m_rows != m.rows()) { return true; }
-    for (size_t i = 0; i < m_rows * m_columns; ++i) {
-        if (std::abs(m_ptr[i] - m[i]) <= eps * 100) { return false; }
-    }
-    return true;
+    return !(*this == m);
 }
 
 template<typename T>
