@@ -78,8 +78,8 @@ linalg::Matrix<T>::Matrix(std::initializer_list<Y> m) {
         throw;
     }
 
-    m_columns = m.size();
-    m_rows = 1;
+    m_columns = 1;
+    m_rows = m.size();
     m_size = m_columns * m_rows;
     m_capacity = m_size;
 }
