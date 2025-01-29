@@ -905,9 +905,11 @@ void linalg::Matrix<T>::clear() noexcept {
 
 template<typename T>
 void linalg::Matrix<T>::reserve(size_t n) {
+    linalg::Matrix<T> m = *this;
     this->clear();
     m_ptr = reinterpret_cast<T *>(operator new(n * sizeof(T)));
     m_capacity = n;
+    *this = m;
 }
 
 
