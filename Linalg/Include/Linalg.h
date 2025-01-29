@@ -154,24 +154,6 @@ namespace linalg {
 
     template <typename T>
     Matrix<T> backward_substitution(const Matrix<T>& m_U, const Matrix<T>& y);
-
-    Complex parse_complex(const std::string& complex_str);
-
-    bool validate_line_format(const std::string& line);
-
-    size_t count_columns(const std::string& line);
-
-    void load_matrix_dimensions(std::ifstream& file, size_t& rows, size_t& cols);
-
-    void load_matrix_data(std::ifstream& file, linalg::Matrix<Complex>& matrix);
-
-    Matrix<Complex> load_matrix(const char* file_name);
-
-    std::string sanitize_line(const std::string &line);
-
-    void analyze_matrix(const std::string& file_name);
-
-    void process_matrix_line(const std::string &line, size_t &cols, size_t &rows, Matrix<Complex> *matrix = nullptr);
 ////    класс исключений, от которого будут наследовать остальные
     class Matrix_exception {
     public:
