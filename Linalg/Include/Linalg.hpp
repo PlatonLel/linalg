@@ -394,6 +394,7 @@ std::ostream &linalg::operator<<(std::ostream &os, const Matrix <T> &m) {
     size_t max_width = 0;
     std::ostringstream temp;
 
+
     for (size_t i = 0; i < m.rows(); ++i) {
         for (size_t j = 0; j < m.columns(); ++j) {
             temp.str("");
@@ -900,7 +901,6 @@ void linalg::Matrix<T>::clear() noexcept {
     m_size = 0;
     m_columns = 0;
     m_rows = 0;
-    m_capacity = 0;
 }
 
 template<typename T>
